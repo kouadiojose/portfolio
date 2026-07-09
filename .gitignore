@@ -15,3 +15,4 @@ backend/*.db
 frontend/node_modules/
 frontend/dist/
 frontend/.angular/
+backend/app/static/

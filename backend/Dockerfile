@@ -13,5 +13,6 @@ USER app
 
 EXPOSE 8000
 
-# Seed is idempotent: creates schema/admin/content only when missing
-CMD ["sh", "-c", "python -m app.seed && uvicorn app.main:app --host 0.0.0.0 --port 8000"]
+# Seed is idempotent: creates schema/admin/content only when missing.
+# PORT is honored for platforms that inject it (Railway, Heroku…).
+CMD ["sh", "-c", "python -m app.seed && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]

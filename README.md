@@ -62,7 +62,36 @@ cd backend
 .venv/bin/python -m pytest
 ```
 
-## Run with Docker (production)
+## Deploy on Railway (recommended)
+
+The repository ships a single-container image (root `Dockerfile` + `railway.json`) that builds
+the Angular bundle and serves it from FastAPI — one web service + one PostgreSQL database.
+
+1. **Create the project**: on [railway.app](https://railway.app) → *New Project* →
+   *Deploy from GitHub repo* → select `kouadiojose/portfolio`. Railway detects `railway.json`
+   and builds the root `Dockerfile` automatically.
+2. **Add PostgreSQL**: in the project canvas → *Create* → *Database* → *PostgreSQL*.
+3. **Set the web service variables** (service → *Variables*):
+
+   | Variable         | Value                                                  |
+   |------------------|--------------------------------------------------------|
+   | `DATABASE_URL`   | `${{Postgres.DATABASE_URL}}` (reference, not a copy)   |
+   | `SECRET_KEY`     | output of `openssl rand -hex 32`                       |
+   | `ADMIN_EMAIL`    | your admin login email                                 |
+   | `ADMIN_PASSWORD` | a strong password (used only on first seed)            |
+
+4. **Deploy**: Railway builds and starts the service; the seed runs automatically and the
+   healthcheck hits `/api/health`. Open the generated `*.up.railway.app` URL to verify.
+5. **Custom domain**: service → *Settings* → *Networking* → add `yeoyedjande.com`, then create
+   the CNAME record shown at your DNS provider. TLS is automatic.
+
+Notes:
+- The app listens on Railway's injected `PORT` and normalizes Railway's `postgres://` URL.
+- Content edits made in `/admin` are stored in PostgreSQL and survive redeployments
+  (the seed never overwrites existing data).
+- Each push to the deployed branch triggers a new deployment.
+
+## Run with Docker (production, self-hosted)
 
 ```bash
 cp .env.example .env    # then set real values (POSTGRES_PASSWORD, SECRET_KEY, ADMIN_PASSWORD)
