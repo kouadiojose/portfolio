@@ -8,6 +8,8 @@ redeployments.
 Run with:  python -m app.seed
 Reset with (drops ALL data): python -m app.reset
 """
+from sqlalchemy import inspect
+
 from .config import get_settings
 from .database import Base, SessionLocal, engine
 from .models import (
@@ -21,9 +23,41 @@ from .models import (
 from .security import hash_password
 
 
+def schema_matches() -> bool:
+    """True when every model column exists in the database.
+
+    Detects pre-launch schema changes (missing columns/tables). Type changes
+    on same-named columns are not detected — use `python -m app.reset` then.
+    """
+    inspector = inspect(engine)
+    for table in Base.metadata.sorted_tables:
+        if not inspector.has_table(table.name):
+            continue  # create_all will create it
+        existing = {column["name"] for column in inspector.get_columns(table.name)}
+        expected = {column.name for column in table.columns}
+        if not expected.issubset(existing):
+            return False
+    return True
+
+
 def seed() -> None:
-    Base.metadata.create_all(bind=engine)
     settings = get_settings()
+
+    if not schema_matches():
+        if settings.reset_on_schema_mismatch:
+            print(
+                "WARNING: database schema is out of date — dropping all tables "
+                "and re-seeding (disable with RESET_ON_SCHEMA_MISMATCH=false)."
+            )
+            Base.metadata.drop_all(bind=engine)
+        else:
+            print(
+                "ERROR: database schema is out of date. Run `python -m app.reset` "
+                "or set RESET_ON_SCHEMA_MISMATCH=true to reset automatically."
+            )
+            raise SystemExit(1)
+
+    Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:
         if not db.query(AdminUser).first():

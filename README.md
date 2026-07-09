@@ -116,18 +116,18 @@ Caddy, Traefik, or certbot + nginx).
 - **Projects / Experience / Expertise / Tech stack / Value props**: full CRUD with ordering;
   projects can be hidden without deleting them (`featured` flag).
 
-## Resetting the database
+## Database schema changes
 
-Schema changes (like the bilingual content migration) require a reset — there is no
-migration tooling by design at this stage:
+There is no migration tooling by design at this stage. Instead, the startup seed checks the
+schema: **if the database is missing model columns, all tables are dropped and re-seeded
+automatically** (admin edits are lost). This keeps deployments self-healing pre-launch.
+
+Once your content is curated, set `RESET_ON_SCHEMA_MISMATCH=false` in the environment —
+startup will then refuse to run on a schema mismatch and you decide when to reset manually:
 
 ```bash
-python -m app.reset   # drops ALL tables, then re-seeds (admin edits are lost)
+python -m app.reset   # drops ALL tables, then re-seeds
 ```
-
-On Railway: open the service → *Settings* → one-off command, or temporarily change the start
-command to `python -m app.reset && uvicorn app.main:app --host 0.0.0.0 --port $PORT`, deploy
-once, then revert.
 
 ## Things to complete
 

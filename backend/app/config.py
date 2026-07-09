@@ -27,6 +27,11 @@ class Settings(BaseSettings):
     # Comma-separated list of allowed CORS origins
     cors_origins: str = "http://localhost:4200,http://127.0.0.1:4200"
 
+    # When the database schema no longer matches the models (e.g. after a
+    # pre-launch schema change), drop and re-seed automatically at startup.
+    # Set to false once your content is curated and you prefer manual resets.
+    reset_on_schema_mismatch: bool = True
+
     @property
     def cors_origin_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
