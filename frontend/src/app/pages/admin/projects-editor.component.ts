@@ -2,14 +2,15 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { AdminApiService } from '../../core/admin-api.service';
-import { Project } from '../../core/models';
+import { AdminProject } from '../../core/models';
+import { fromLines, fromStr, toLines, toStr } from './i18n-form.util';
 
 @Component({
   selector: 'app-admin-projects',
   imports: [ReactiveFormsModule],
   template: `
     <h1>Projects</h1>
-    <p class="admin-sub">Featured projects shown on the public site. Unfeatured projects stay in the database but are hidden.</p>
+    <p class="admin-sub">Case studies in both languages. Unfeatured projects stay in the database but are hidden.</p>
 
     <div class="admin-toolbar">
       <span></span>
@@ -19,47 +20,134 @@ import { Project } from '../../core/models';
     @if (editing() !== null) {
       <div class="admin-panel">
         <h2>{{ editing()!.id ? 'Edit project' : 'New project' }}</h2>
-        <form class="form" style="max-width: none;" [formGroup]="form" (ngSubmit)="save()">
+        <form class="form" [formGroup]="form" (ngSubmit)="save()">
           <div class="form-row">
             <div class="form-field">
-              <label for="title">Title</label>
-              <input id="title" formControlName="title">
+              <label>Slug <span class="hint">(URL identifier, e.g. my-project)</span></label>
+              <input formControlName="slug">
             </div>
             <div class="form-field">
-              <label for="slug">Slug <span class="hint">(URL identifier, e.g. my-project)</span></label>
-              <input id="slug" formControlName="slug">
+              <label>Visual</label>
+              <select formControlName="visual">
+                <option value="payments">Payments / API card</option>
+                <option value="monitoring">Monitoring chart</option>
+                <option value="security">Security shield</option>
+                <option value="integration">System integration</option>
+                <option value="drone">Drone / map</option>
+              </select>
             </div>
           </div>
+
+          <div class="i18n-pair">
+            <div class="form-field">
+              <label>Title <span class="i18n-tag">EN</span></label>
+              <input formControlName="title_en">
+            </div>
+            <div class="form-field">
+              <label>Title <span class="i18n-tag">FR</span></label>
+              <input formControlName="title_fr">
+            </div>
+          </div>
+          <div class="i18n-pair">
+            <div class="form-field">
+              <label>Role <span class="i18n-tag">EN</span></label>
+              <input formControlName="role_en">
+            </div>
+            <div class="form-field">
+              <label>Role <span class="i18n-tag">FR</span></label>
+              <input formControlName="role_fr">
+            </div>
+          </div>
+          <div class="i18n-pair">
+            <div class="form-field">
+              <label>Summary <span class="i18n-tag">EN</span></label>
+              <textarea formControlName="summary_en" rows="2"></textarea>
+            </div>
+            <div class="form-field">
+              <label>Summary <span class="i18n-tag">FR</span></label>
+              <textarea formControlName="summary_fr" rows="2"></textarea>
+            </div>
+          </div>
+          <div class="i18n-pair">
+            <div class="form-field">
+              <label>Card impacts <span class="i18n-tag">EN</span> <span class="hint">(one per line, max 3)</span></label>
+              <textarea formControlName="highlights_en" rows="3"></textarea>
+            </div>
+            <div class="form-field">
+              <label>Card impacts <span class="i18n-tag">FR</span> <span class="hint">(one per line, max 3)</span></label>
+              <textarea formControlName="highlights_fr" rows="3"></textarea>
+            </div>
+          </div>
+
+          <h2 style="margin-top: 10px;">Case study</h2>
+          <div class="i18n-pair">
+            <div class="form-field">
+              <label>Context <span class="i18n-tag">EN</span></label>
+              <textarea formControlName="context_en" rows="3"></textarea>
+            </div>
+            <div class="form-field">
+              <label>Context <span class="i18n-tag">FR</span></label>
+              <textarea formControlName="context_fr" rows="3"></textarea>
+            </div>
+          </div>
+          <div class="i18n-pair">
+            <div class="form-field">
+              <label>Problem <span class="i18n-tag">EN</span></label>
+              <textarea formControlName="problem_en" rows="3"></textarea>
+            </div>
+            <div class="form-field">
+              <label>Problem <span class="i18n-tag">FR</span></label>
+              <textarea formControlName="problem_fr" rows="3"></textarea>
+            </div>
+          </div>
+          <div class="i18n-pair">
+            <div class="form-field">
+              <label>Technical approach <span class="i18n-tag">EN</span></label>
+              <textarea formControlName="approach_en" rows="4"></textarea>
+            </div>
+            <div class="form-field">
+              <label>Technical approach <span class="i18n-tag">FR</span></label>
+              <textarea formControlName="approach_fr" rows="4"></textarea>
+            </div>
+          </div>
+          <div class="i18n-pair">
+            <div class="form-field">
+              <label>Key contributions <span class="i18n-tag">EN</span> <span class="hint">(one per line)</span></label>
+              <textarea formControlName="contributions_en" rows="4"></textarea>
+            </div>
+            <div class="form-field">
+              <label>Key contributions <span class="i18n-tag">FR</span> <span class="hint">(one per line)</span></label>
+              <textarea formControlName="contributions_fr" rows="4"></textarea>
+            </div>
+          </div>
+          <div class="i18n-pair">
+            <div class="form-field">
+              <label>Learnings / business value <span class="i18n-tag">EN</span></label>
+              <textarea formControlName="learnings_en" rows="3"></textarea>
+            </div>
+            <div class="form-field">
+              <label>Learnings / business value <span class="i18n-tag">FR</span></label>
+              <textarea formControlName="learnings_fr" rows="3"></textarea>
+            </div>
+          </div>
+
           <div class="form-row">
             <div class="form-field">
-              <label for="role">Role</label>
-              <input id="role" formControlName="role" placeholder="e.g. Full Stack Developer">
+              <label>Technologies <span class="hint">(one per line, shown as-is in both languages)</span></label>
+              <textarea formControlName="tags" rows="4"></textarea>
             </div>
-            <div class="form-field">
-              <label for="sort_order">Sort order</label>
-              <input id="sort_order" type="number" formControlName="sort_order">
+            <div class="form" style="align-content: start;">
+              <div class="form-field" style="max-width: 160px;">
+                <label>Sort order</label>
+                <input type="number" formControlName="sort_order">
+              </div>
+              <div class="form-field">
+                <label>
+                  <input type="checkbox" formControlName="featured" style="width: auto; margin-right: 8px;">
+                  Visible on the public site
+                </label>
+              </div>
             </div>
-          </div>
-          <div class="form-field">
-            <label for="summary">Summary <span class="hint">(shown on cards)</span></label>
-            <textarea id="summary" formControlName="summary" rows="2"></textarea>
-          </div>
-          <div class="form-field">
-            <label for="context">Context <span class="hint">(longer text for the detail page)</span></label>
-            <textarea id="context" formControlName="context" rows="4"></textarea>
-          </div>
-          <div class="form-row">
-            <div class="form-field">
-              <label for="highlights">Highlights <span class="hint">(one per line)</span></label>
-              <textarea id="highlights" formControlName="highlights" rows="4"></textarea>
-            </div>
-            <div class="form-field">
-              <label for="tags">Technologies <span class="hint">(one per line)</span></label>
-              <textarea id="tags" formControlName="tags" rows="4"></textarea>
-            </div>
-          </div>
-          <div class="form-field">
-            <label><input type="checkbox" formControlName="featured" style="width: auto; margin-right: 8px;">Visible on the public site</label>
           </div>
 
           @if (error()) {
@@ -70,7 +158,7 @@ import { Project } from '../../core/models';
             <button class="btn btn-primary" type="submit" [disabled]="form.invalid || saving()">
               {{ saving() ? 'Saving…' : 'Save' }}
             </button>
-            <button class="btn btn-ghost" type="button" (click)="cancel()">Cancel</button>
+            <button class="btn btn-quiet" type="button" (click)="cancel()">Cancel</button>
           </div>
         </form>
       </div>
@@ -85,15 +173,18 @@ import { Project } from '../../core/models';
           @for (project of list; track project.id) {
             <tr>
               <td>{{ project.sort_order }}</td>
-              <td><strong>{{ project.title }}</strong><br><span class="message-meta">/{{ project.slug }}</span></td>
-              <td>{{ project.role }}</td>
+              <td>
+                <strong>{{ project.title['en'] }}</strong><br>
+                <span class="message-meta">/{{ project.slug }}</span>
+              </td>
+              <td>{{ project.role['en'] }}</td>
               <td>
                 <span class="badge" [class.badge-read]="project.featured" [class.badge-hidden]="!project.featured">
                   {{ project.featured ? 'Visible' : 'Hidden' }}
                 </span>
               </td>
               <td class="row-actions">
-                <button class="btn btn-secondary btn-sm" (click)="startEdit(project)">Edit</button>
+                <button class="btn btn-outline btn-sm" (click)="startEdit(project)">Edit</button>
                 <button class="btn btn-danger btn-sm" (click)="remove(project)">Delete</button>
               </td>
             </tr>
@@ -101,7 +192,7 @@ import { Project } from '../../core/models';
         </tbody>
       </table>
     } @else {
-      <div class="loading-state"><div class="spinner"></div>Loading…</div>
+      <div class="loading-state"><div class="spinner"></div></div>
     }
   `,
 })
@@ -109,18 +200,32 @@ export class ProjectsEditorComponent {
   private api = inject(AdminApiService);
   private fb = inject(FormBuilder);
 
-  projects = signal<Project[] | null>(null);
+  projects = signal<AdminProject[] | null>(null);
   editing = signal<{ id: number | null } | null>(null);
   saving = signal(false);
   error = signal('');
 
   form = this.fb.nonNullable.group({
-    title: ['', Validators.required],
     slug: ['', [Validators.required, Validators.pattern(/^[a-z0-9]+(-[a-z0-9]+)*$/)]],
-    role: [''],
-    summary: [''],
-    context: [''],
-    highlights: [''],
+    visual: ['payments'],
+    title_en: ['', Validators.required],
+    title_fr: [''],
+    role_en: [''],
+    role_fr: [''],
+    summary_en: [''],
+    summary_fr: [''],
+    highlights_en: [''],
+    highlights_fr: [''],
+    context_en: [''],
+    context_fr: [''],
+    problem_en: [''],
+    problem_fr: [''],
+    approach_en: [''],
+    approach_fr: [''],
+    contributions_en: [''],
+    contributions_fr: [''],
+    learnings_en: [''],
+    learnings_fr: [''],
     tags: [''],
     featured: [true],
     sort_order: [0],
@@ -136,18 +241,29 @@ export class ProjectsEditorComponent {
 
   startCreate(): void {
     this.error.set('');
-    this.form.reset({ featured: true, sort_order: (this.projects()?.length ?? 0) + 1 });
+    this.form.reset({ visual: 'payments', featured: true, sort_order: (this.projects()?.length ?? 0) + 1 });
     this.editing.set({ id: null });
   }
 
-  startEdit(project: Project): void {
+  startEdit(p: AdminProject): void {
     this.error.set('');
     this.form.patchValue({
-      ...project,
-      highlights: project.highlights.join('\n'),
-      tags: project.tags.join('\n'),
+      slug: p.slug,
+      visual: p.visual,
+      title_en: toStr(p.title, 'en'), title_fr: toStr(p.title, 'fr'),
+      role_en: toStr(p.role, 'en'), role_fr: toStr(p.role, 'fr'),
+      summary_en: toStr(p.summary, 'en'), summary_fr: toStr(p.summary, 'fr'),
+      highlights_en: toLines(p.highlights, 'en'), highlights_fr: toLines(p.highlights, 'fr'),
+      context_en: toStr(p.context, 'en'), context_fr: toStr(p.context, 'fr'),
+      problem_en: toStr(p.problem, 'en'), problem_fr: toStr(p.problem, 'fr'),
+      approach_en: toStr(p.approach, 'en'), approach_fr: toStr(p.approach, 'fr'),
+      contributions_en: toLines(p.contributions, 'en'), contributions_fr: toLines(p.contributions, 'fr'),
+      learnings_en: toStr(p.learnings, 'en'), learnings_fr: toStr(p.learnings, 'fr'),
+      tags: (p.tags ?? []).join('\n'),
+      featured: p.featured,
+      sort_order: p.sort_order,
     });
-    this.editing.set({ id: project.id });
+    this.editing.set({ id: p.id });
     window.scrollTo({ top: 0 });
   }
 
@@ -160,17 +276,28 @@ export class ProjectsEditorComponent {
     this.saving.set(true);
     this.error.set('');
 
-    const raw = this.form.getRawValue();
+    const r = this.form.getRawValue();
     const payload = {
-      ...raw,
-      highlights: raw.highlights.split('\n').map((s) => s.trim()).filter(Boolean),
-      tags: raw.tags.split('\n').map((s) => s.trim()).filter(Boolean),
+      slug: r.slug,
+      visual: r.visual,
+      title: fromStr(r.title_en, r.title_fr),
+      role: fromStr(r.role_en, r.role_fr),
+      summary: fromStr(r.summary_en, r.summary_fr),
+      highlights: fromLines(r.highlights_en, r.highlights_fr),
+      context: fromStr(r.context_en, r.context_fr),
+      problem: fromStr(r.problem_en, r.problem_fr),
+      approach: fromStr(r.approach_en, r.approach_fr),
+      contributions: fromLines(r.contributions_en, r.contributions_fr),
+      learnings: fromStr(r.learnings_en, r.learnings_fr),
+      tags: r.tags.split('\n').map((s) => s.trim()).filter(Boolean),
+      featured: r.featured,
+      sort_order: r.sort_order,
     };
 
     const id = this.editing()?.id;
     const request = id
-      ? this.api.update<Project>('projects', id, payload)
-      : this.api.create<Project>('projects', payload);
+      ? this.api.update<AdminProject>('projects', id, payload)
+      : this.api.create<AdminProject>('projects', payload);
 
     request.subscribe({
       next: () => {
@@ -185,8 +312,8 @@ export class ProjectsEditorComponent {
     });
   }
 
-  remove(project: Project): void {
-    if (!confirm(`Delete "${project.title}"?`)) return;
+  remove(project: AdminProject): void {
+    if (!confirm(`Delete "${project.title['en']}"?`)) return;
     this.api.delete('projects', project.id).subscribe(() => this.load());
   }
 }

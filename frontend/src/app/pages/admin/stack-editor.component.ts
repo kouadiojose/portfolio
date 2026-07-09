@@ -2,14 +2,15 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { AdminApiService } from '../../core/admin-api.service';
-import { StackItem } from '../../core/models';
+import { AdminStackItem } from '../../core/models';
+import { fromStr, toStr } from './i18n-form.util';
 
 @Component({
   selector: 'app-admin-stack',
   imports: [ReactiveFormsModule],
   template: `
     <h1>Tech stack</h1>
-    <p class="admin-sub">Technologies grouped by category — no percentages, by design.</p>
+    <p class="admin-sub">Technologies grouped by category — category labels are bilingual.</p>
 
     <div class="admin-toolbar">
       <span></span>
@@ -19,31 +20,32 @@ import { StackItem } from '../../core/models';
     @if (editing() !== null) {
       <div class="admin-panel">
         <h2>{{ editing()!.id ? 'Edit item' : 'New item' }}</h2>
-        <form class="form" style="max-width: none;" [formGroup]="form" (ngSubmit)="save()">
-          <div class="form-row">
+        <form class="form" [formGroup]="form" (ngSubmit)="save()">
+          <div class="i18n-pair">
             <div class="form-field">
-              <label for="category">Category <span class="hint">(e.g. Frontend, Backend, Database)</span></label>
-              <input id="category" formControlName="category" list="categories">
-              <datalist id="categories">
-                @for (category of categories(); track category) {
-                  <option [value]="category"></option>
-                }
-              </datalist>
+              <label>Category <span class="i18n-tag">EN</span> <span class="hint">(e.g. Frontend, Security)</span></label>
+              <input formControlName="category_en">
             </div>
             <div class="form-field">
-              <label for="name">Technology</label>
-              <input id="name" formControlName="name">
+              <label>Category <span class="i18n-tag">FR</span> <span class="hint">(ex. Frontend, Sécurité)</span></label>
+              <input formControlName="category_fr">
             </div>
           </div>
-          <div class="form-field" style="max-width: 200px;">
-            <label for="sort_order">Sort order</label>
-            <input id="sort_order" type="number" formControlName="sort_order">
+          <div class="form-row">
+            <div class="form-field">
+              <label>Technology</label>
+              <input formControlName="name">
+            </div>
+            <div class="form-field" style="max-width: 160px;">
+              <label>Sort order</label>
+              <input type="number" formControlName="sort_order">
+            </div>
           </div>
           <div style="display: flex; gap: 10px;">
             <button class="btn btn-primary" type="submit" [disabled]="form.invalid || saving()">
               {{ saving() ? 'Saving…' : 'Save' }}
             </button>
-            <button class="btn btn-ghost" type="button" (click)="editing.set(null)">Cancel</button>
+            <button class="btn btn-quiet" type="button" (click)="editing.set(null)">Cancel</button>
           </div>
         </form>
       </div>
@@ -56,10 +58,10 @@ import { StackItem } from '../../core/models';
           @for (item of list; track item.id) {
             <tr>
               <td>{{ item.sort_order }}</td>
-              <td>{{ item.category }}</td>
+              <td>{{ item.category['en'] }}</td>
               <td><strong>{{ item.name }}</strong></td>
               <td class="row-actions">
-                <button class="btn btn-secondary btn-sm" (click)="startEdit(item)">Edit</button>
+                <button class="btn btn-outline btn-sm" (click)="startEdit(item)">Edit</button>
                 <button class="btn btn-danger btn-sm" (click)="remove(item)">Delete</button>
               </td>
             </tr>
@@ -67,7 +69,7 @@ import { StackItem } from '../../core/models';
         </tbody>
       </table>
     } @else {
-      <div class="loading-state"><div class="spinner"></div>Loading…</div>
+      <div class="loading-state"><div class="spinner"></div></div>
     }
   `,
 })
@@ -75,14 +77,13 @@ export class StackEditorComponent {
   private api = inject(AdminApiService);
   private fb = inject(FormBuilder);
 
-  items = signal<StackItem[] | null>(null);
+  items = signal<AdminStackItem[] | null>(null);
   editing = signal<{ id: number | null } | null>(null);
   saving = signal(false);
 
-  categories = signal<string[]>([]);
-
   form = this.fb.nonNullable.group({
-    category: ['', Validators.required],
+    category_en: ['', Validators.required],
+    category_fr: [''],
     name: ['', Validators.required],
     sort_order: [0],
   });
@@ -92,10 +93,7 @@ export class StackEditorComponent {
   }
 
   load(): void {
-    this.api.listStack().subscribe((list) => {
-      this.items.set(list);
-      this.categories.set([...new Set(list.map((item) => item.category))]);
-    });
+    this.api.listStack().subscribe((list) => this.items.set(list));
   }
 
   startCreate(): void {
@@ -103,19 +101,27 @@ export class StackEditorComponent {
     this.editing.set({ id: null });
   }
 
-  startEdit(item: StackItem): void {
-    this.form.patchValue(item);
+  startEdit(item: AdminStackItem): void {
+    this.form.patchValue({
+      category_en: toStr(item.category, 'en'),
+      category_fr: toStr(item.category, 'fr'),
+      name: item.name,
+      sort_order: item.sort_order,
+    });
     this.editing.set({ id: item.id });
   }
 
   save(): void {
     if (this.form.invalid) return;
     this.saving.set(true);
+    const r = this.form.getRawValue();
+    const payload = {
+      category: fromStr(r.category_en, r.category_fr),
+      name: r.name,
+      sort_order: r.sort_order,
+    };
     const id = this.editing()?.id;
-    const payload = this.form.getRawValue();
-    const request = id
-      ? this.api.update('stack', id, payload)
-      : this.api.create('stack', payload);
+    const request = id ? this.api.update('stack', id, payload) : this.api.create('stack', payload);
     request.subscribe(() => {
       this.saving.set(false);
       this.editing.set(null);
@@ -123,7 +129,7 @@ export class StackEditorComponent {
     });
   }
 
-  remove(item: StackItem): void {
+  remove(item: AdminStackItem): void {
     if (!confirm(`Delete "${item.name}"?`)) return;
     this.api.delete('stack', item.id).subscribe(() => this.load());
   }

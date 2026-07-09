@@ -1,0 +1,79 @@
+{
+  "nav": {
+    "home": "Home",
+    "work": "Work",
+    "contact": "Contact"
+  },
+  "hero": {
+    "viewWork": "View selected work",
+    "downloadCv": "Download CV",
+    "contactMe": "Contact me"
+  },
+  "about": {
+    "eyebrow": "About",
+    "howIWork": "How I work"
+  },
+  "work": {
+    "eyebrow": "Selected Work",
+    "title": "Projects with real operational impact",
+    "note": "Enterprise projects are presented in an anonymized form for confidentiality.",
+    "viewCaseStudy": "View case study",
+    "featured": "Featured"
+  },
+  "caseStudy": {
+    "back": "All work",
+    "context": "Context",
+    "problem": "Problem",
+    "role": "My role",
+    "approach": "Technical approach",
+    "contributions": "Key contributions",
+    "technologies": "Technologies",
+    "learnings": "What I learned / business value",
+    "discuss": "Discuss a similar project",
+    "notFound": "Project not found",
+    "backToWork": "Back to work"
+  },
+  "stack": {
+    "eyebrow": "Tech Stack",
+    "title": "Tools I work with"
+  },
+  "experience": {
+    "eyebrow": "Experience",
+    "title": "Professional journey"
+  },
+  "values": {
+    "eyebrow": "Why work with me",
+    "title": "What you can expect"
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "title": "Let's build something reliable.",
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "Your full name",
+      "email": "Email",
+      "emailPlaceholder": "you@company.com",
+      "subject": "Subject",
+      "subjectPlaceholder": "Role, project or opportunity",
+      "message": "Message",
+      "messagePlaceholder": "A few words about the role or the project…",
+      "send": "Send message",
+      "sending": "Sending…",
+      "sent": "Message sent — thank you. I usually reply within 24 hours.",
+      "error": "Something went wrong. Please retry or email me directly.",
+      "nameError": "Please enter your name.",
+      "emailError": "Please enter a valid email address.",
+      "messageError": "Please write a short message (at least 10 characters)."
+    }
+  },
+  "footer": {
+    "poweredBy": "This portfolio is powered by a custom Angular / FastAPI admin dashboard.",
+    "backToTop": "Back to top"
+  },
+  "meta": {
+    "homeTitle": "Yeo Yedjande — Senior Full Stack Developer",
+    "homeDescription": "Senior Full Stack Developer building secure, scalable and business-oriented platforms for enterprise environments. Angular, Python/FastAPI, PostgreSQL, Docker, Keycloak.",
+    "workTitle": "Selected Work — Yeo Yedjande",
+    "contactTitle": "Contact — Yeo Yedjande"
+  }
+}

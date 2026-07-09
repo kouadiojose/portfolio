@@ -1,1 +1,3 @@
-Place the CV PDF here as: Yeo-Yedjande-CV.pdf
+Place your CV PDFs here:
+- CV_EN.pdf (English version)
+- CV_FR.pdf (French version)

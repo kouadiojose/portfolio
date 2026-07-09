@@ -1,0 +1,79 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "work": "Projets",
+    "contact": "Contact"
+  },
+  "hero": {
+    "viewWork": "Voir mes projets",
+    "downloadCv": "Télécharger le CV",
+    "contactMe": "Me contacter"
+  },
+  "about": {
+    "eyebrow": "À propos",
+    "howIWork": "Ma façon de travailler"
+  },
+  "work": {
+    "eyebrow": "Projets sélectionnés",
+    "title": "Des projets à impact opérationnel réel",
+    "note": "Les projets d'entreprise sont présentés de façon anonymisée par confidentialité.",
+    "viewCaseStudy": "Voir l'étude de cas",
+    "featured": "À la une"
+  },
+  "caseStudy": {
+    "back": "Tous les projets",
+    "context": "Contexte",
+    "problem": "Problème",
+    "role": "Mon rôle",
+    "approach": "Approche technique",
+    "contributions": "Contributions clés",
+    "technologies": "Technologies",
+    "learnings": "Enseignements / valeur métier",
+    "discuss": "Discuter d'un projet similaire",
+    "notFound": "Projet introuvable",
+    "backToWork": "Retour aux projets"
+  },
+  "stack": {
+    "eyebrow": "Stack technique",
+    "title": "Mes outils de travail"
+  },
+  "experience": {
+    "eyebrow": "Expérience",
+    "title": "Parcours professionnel"
+  },
+  "values": {
+    "eyebrow": "Pourquoi travailler avec moi",
+    "title": "Ce que vous pouvez attendre"
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "title": "Construisons quelque chose de fiable.",
+    "form": {
+      "name": "Nom",
+      "namePlaceholder": "Votre nom complet",
+      "email": "Email",
+      "emailPlaceholder": "vous@entreprise.com",
+      "subject": "Objet",
+      "subjectPlaceholder": "Poste, projet ou opportunité",
+      "message": "Message",
+      "messagePlaceholder": "Quelques mots sur le poste ou le projet…",
+      "send": "Envoyer le message",
+      "sending": "Envoi…",
+      "sent": "Message envoyé — merci. Je réponds généralement sous 24 heures.",
+      "error": "Une erreur est survenue. Réessayez ou écrivez-moi directement par email.",
+      "nameError": "Veuillez saisir votre nom.",
+      "emailError": "Veuillez saisir une adresse email valide.",
+      "messageError": "Veuillez écrire un court message (au moins 10 caractères)."
+    }
+  },
+  "footer": {
+    "poweredBy": "Ce portfolio est propulsé par un back-office sur mesure Angular / FastAPI.",
+    "backToTop": "Haut de page"
+  },
+  "meta": {
+    "homeTitle": "Yeo Yedjande — Développeur Full Stack Senior",
+    "homeDescription": "Développeur Full Stack Senior : plateformes sécurisées, évolutives et orientées métier pour les environnements d'entreprise. Angular, Python/FastAPI, PostgreSQL, Docker, Keycloak.",
+    "workTitle": "Projets — Yeo Yedjande",
+    "contactTitle": "Contact — Yeo Yedjande"
+  }
+}

@@ -9,6 +9,11 @@ Live site: [https://yeoyedjande.com](https://yeoyedjande.com)
 FastAPI REST API and a PostgreSQL database, secured with JWT, shipped with Docker — the exact
 technologies highlighted on the site.
 
+**Fully bilingual (EN/FR)**: language-prefixed routes (`/en/…`, `/fr/…`), Transloco for UI strings,
+bilingual content stored in the database as `{"en": …, "fr": …}` JSON, a navbar EN/FR switcher with
+no page reload, browser-language detection with localStorage persistence, per-language meta tags and
+CV files (`CV_EN.pdf` / `CV_FR.pdf`), and the visitor's language stored with each contact message.
+
 ## Architecture
 
 ```
@@ -111,10 +116,23 @@ Caddy, Traefik, or certbot + nginx).
 - **Projects / Experience / Expertise / Tech stack / Value props**: full CRUD with ordering;
   projects can be hidden without deleting them (`featured` flag).
 
+## Resetting the database
+
+Schema changes (like the bilingual content migration) require a reset — there is no
+migration tooling by design at this stage:
+
+```bash
+python -m app.reset   # drops ALL tables, then re-seeds (admin edits are lost)
+```
+
+On Railway: open the service → *Settings* → one-off command, or temporarily change the start
+command to `python -m app.reset && uvicorn app.main:app --host 0.0.0.0 --port $PORT`, deploy
+once, then revert.
+
 ## Things to complete
 
-1. **CV file**: place your PDF at `frontend/public/assets/cv/Yeo-Yedjande-CV.pdf`
-   (the "Download CV" button points there — the path is editable in the admin).
+1. **CV files**: place both PDFs at `frontend/public/assets/cv/CV_EN.pdf` and
+   `frontend/public/assets/cv/CV_FR.pdf` (paths editable in the admin).
 2. **LinkedIn URL**: verify the URL in the admin → Site content (seeded as
    `https://www.linkedin.com/in/yeo-yedjande`).
 3. **Production secrets**: set strong `SECRET_KEY`, `ADMIN_PASSWORD` and `POSTGRES_PASSWORD`

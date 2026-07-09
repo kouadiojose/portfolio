@@ -1,29 +1,11 @@
 import { Routes } from '@angular/router';
 
 import { authGuard } from './core/auth.guard';
+import { langGuard } from './core/lang.guard';
+import { detectInitialLang } from './core/language.service';
 
 export const routes: Routes = [
-  {
-    path: '',
-    loadComponent: () => import('./pages/home/home.component').then((m) => m.HomeComponent),
-    title: 'Yeo Yedjande — Senior Full Stack Developer',
-  },
-  {
-    path: 'projects',
-    loadComponent: () => import('./pages/projects/projects.component').then((m) => m.ProjectsComponent),
-    title: 'Projects — Yeo Yedjande',
-  },
-  {
-    path: 'projects/:slug',
-    loadComponent: () =>
-      import('./pages/project-detail/project-detail.component').then((m) => m.ProjectDetailComponent),
-    title: 'Project — Yeo Yedjande',
-  },
-  {
-    path: 'contact',
-    loadComponent: () => import('./pages/contact/contact.component').then((m) => m.ContactComponent),
-    title: 'Contact — Yeo Yedjande',
-  },
+  // Admin (not language-prefixed, hidden from the public navigation)
   {
     path: 'admin/login',
     loadComponent: () => import('./pages/admin/login.component').then((m) => m.LoginComponent),
@@ -57,11 +39,6 @@ export const routes: Routes = [
           import('./pages/admin/experiences-editor.component').then((m) => m.ExperiencesEditorComponent),
       },
       {
-        path: 'expertise',
-        loadComponent: () =>
-          import('./pages/admin/expertise-editor.component').then((m) => m.ExpertiseEditorComponent),
-      },
-      {
         path: 'stack',
         loadComponent: () =>
           import('./pages/admin/stack-editor.component').then((m) => m.StackEditorComponent),
@@ -73,5 +50,29 @@ export const routes: Routes = [
       },
     ],
   },
-  { path: '**', redirectTo: '' },
+
+  // Public site, language-prefixed: /en/…, /fr/…
+  {
+    path: ':lang',
+    canActivate: [langGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./pages/home/home.component').then((m) => m.HomeComponent),
+      },
+      {
+        path: 'projects/:slug',
+        loadComponent: () =>
+          import('./pages/case-study/case-study.component').then((m) => m.CaseStudyComponent),
+      },
+      {
+        path: 'contact',
+        loadComponent: () => import('./pages/contact/contact.component').then((m) => m.ContactComponent),
+      },
+    ],
+  },
+
+  // Root + unknown routes → detected language
+  { path: '', pathMatch: 'full', redirectTo: () => `/${detectInitialLang()}` },
+  { path: '**', redirectTo: () => `/${detectInitialLang()}` },
 ];

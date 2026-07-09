@@ -2,38 +2,57 @@
 
   <!-- HERO -->
   <section class="hero" aria-label="Introduction">
-    <div class="container hero-inner">
-      <p class="hero-eyebrow" appReveal>{{ content.settings.hero_eyebrow }}</p>
-      <h1 class="hero-title" appReveal>{{ content.settings.headline }}</h1>
-      <p class="hero-subtitle" appReveal>{{ content.settings.hero_subtitle }}</p>
-      <div class="hero-actions" appReveal>
-        <a class="btn btn-primary" routerLink="/projects">View Projects</a>
-        <a class="btn btn-secondary" [href]="content.settings.cv_url" download>Download CV</a>
-        <a class="btn btn-ghost" routerLink="/contact">Contact Me</a>
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="container hero-grid">
+      <div>
+        <p class="hero-name">
+          <span class="pulse-dot" aria-hidden="true"></span>
+          {{ content.settings.full_name }} — {{ content.settings.availability }}
+        </p>
+        <h1 class="hero-title">{{ content.settings.headline }}</h1>
+        <p class="hero-tagline">{{ content.settings.tagline }}</p>
+        <p class="hero-subtitle">{{ content.settings.hero_subtitle }}</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" [routerLink]="['/', language.lang()]" fragment="work">
+            {{ 'hero.viewWork' | transloco }}</a>
+          <a class="btn btn-outline" [href]="content.settings.cv_url" download>
+            {{ 'hero.downloadCv' | transloco }}</a>
+          <a class="btn btn-quiet" [routerLink]="['/', language.lang(), 'contact']">
+            {{ 'hero.contactMe' | transloco }} →</a>
+        </div>
       </div>
-      <p class="hero-availability" appReveal>
-        <span class="pulse-dot" aria-hidden="true"></span>
-        {{ content.settings.availability }}
-      </p>
+      <app-hero-visual />
     </div>
   </section>
+
+  <!-- IMPACT STRIP -->
+  <div class="impact-strip">
+    <div class="container impact-items">
+      @for (impact of content.settings.impacts; track $index) {
+        <div class="impact-item">{{ impact }}</div>
+      }
+    </div>
+  </div>
 
   <!-- ABOUT -->
   <section class="section" id="about">
     <div class="container">
-      <p class="section-eyebrow" appReveal>About</p>
-      <h2 class="section-title" appReveal>{{ content.settings.about_title }}</h2>
+      <div class="section-head" appReveal>
+        <p class="section-eyebrow">{{ 'about.eyebrow' | transloco }}</p>
+        <h2 class="section-title">{{ content.settings.about_title }}</h2>
+      </div>
       <div class="about-grid">
         <div class="about-text" appReveal>
           @for (paragraph of content.settings.about_paragraphs; track $index) {
             <p>{{ paragraph }}</p>
           }
         </div>
-        <aside class="about-facts" appReveal aria-label="Key facts">
-          @for (fact of content.settings.facts; track fact.label) {
-            <div class="fact">
-              <span class="fact-label">{{ fact.label }}</span>
-              <span class="fact-value">{{ fact.value }}</span>
+        <aside class="principles" appReveal>
+          <p class="principles-title">{{ 'about.howIWork' | transloco }}</p>
+          @for (principle of content.settings.principles; track $index) {
+            <div class="principle">
+              <span class="principle-index">0{{ $index + 1 }}</span>
+              <span class="principle-text">{{ principle }}</span>
             </div>
           }
         </aside>
@@ -41,102 +60,105 @@
     </div>
   </section>
 
-  <!-- CORE EXPERTISE -->
-  <section class="section section-alt" id="expertise">
+  <!-- SELECTED WORK -->
+  <section class="section" id="work" style="padding-top: 20px;">
     <div class="container">
-      <p class="section-eyebrow" appReveal>Core Expertise</p>
-      <h2 class="section-title" appReveal>What I do best</h2>
-      <div class="cards-grid">
-        @for (item of content.expertise; track item.id) {
-          <article class="card" appReveal>
-            <div class="card-icon" aria-hidden="true">
-              <app-icon [name]="item.icon" />
-            </div>
-            <h3>{{ item.title }}</h3>
-            <p>{{ item.description }}</p>
-          </article>
-        }
+      <div class="section-head" appReveal>
+        <p class="section-eyebrow">{{ 'work.eyebrow' | transloco }}</p>
+        <h2 class="section-title">{{ 'work.title' | transloco }}</h2>
+        <p class="section-note">{{ 'work.note' | transloco }}</p>
       </div>
+
+      @if (content.projects.length) {
+        <!-- Featured: first project, large horizontal card -->
+        <article class="feature-card" appReveal>
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <span class="work-role">{{ content.projects[0].role }}</span>
+            <h3 class="work-title">{{ content.projects[0].title }}</h3>
+            <p class="work-summary">{{ content.projects[0].summary }}</p>
+            <ul class="work-impacts">
+              @for (impact of content.projects[0].highlights; track $index) {
+                <li>{{ impact }}</li>
+              }
+            </ul>
+            <div class="chip-row">
+              @for (tag of content.projects[0].tags; track tag) {
+                <span class="chip">{{ tag }}</span>
+              }
+            </div>
+            <a class="work-link" [routerLink]="['/', language.lang(), 'projects', content.projects[0].slug]">
+              {{ 'work.viewCaseStudy' | transloco }} →</a>
+          </div>
+          <app-project-visual [kind]="content.projects[0].visual" />
+        </article>
+
+        <!-- Remaining projects: elegant grid -->
+        <div class="work-grid">
+          @for (project of content.projects.slice(1); track project.id) {
+            <article class="work-card" appReveal>
+              <app-project-visual [kind]="project.visual" />
+              <span class="work-role">{{ project.role }}</span>
+              <h3 class="work-title">{{ project.title }}</h3>
+              <p class="work-summary">{{ project.summary }}</p>
+              <div class="chip-row">
+                @for (tag of project.tags; track tag) {
+                  <span class="chip">{{ tag }}</span>
+                }
+              </div>
+              <a class="work-link" [routerLink]="['/', language.lang(), 'projects', project.slug]">
+                {{ 'work.viewCaseStudy' | transloco }} →</a>
+            </article>
+          }
+        </div>
+      }
     </div>
   </section>
 
   <!-- TECH STACK -->
-  <section class="section" id="stack">
+  <section class="section" id="stack" style="padding-top: 20px;">
     <div class="container">
-      <p class="section-eyebrow" appReveal>Tech Stack</p>
-      <h2 class="section-title" appReveal>Tools I work with every day</h2>
-      <div class="stack-grid">
+      <div class="section-head" appReveal>
+        <p class="section-eyebrow">{{ 'stack.eyebrow' | transloco }}</p>
+        <h2 class="section-title">{{ 'stack.title' | transloco }}</h2>
+      </div>
+      <div class="stack-rows" appReveal>
         @for (group of stackGroups$ | async; track group.category) {
-          <div class="stack-group" appReveal>
-            <h3>{{ group.category }}</h3>
-            <ul class="tag-list">
+          <div class="stack-row">
+            <span class="stack-category">{{ group.category }}</span>
+            <div class="chip-row">
               @for (item of group.items; track item.id) {
-                <li>{{ item.name }}</li>
+                <span class="chip">{{ item.name }}</span>
               }
-            </ul>
+            </div>
           </div>
         }
       </div>
     </div>
   </section>
 
-  <!-- FEATURED PROJECTS -->
-  <section class="section section-alt" id="projects">
-    <div class="container">
-      <p class="section-eyebrow" appReveal>Featured Projects</p>
-      <h2 class="section-title" appReveal>Selected enterprise work</h2>
-      <p class="section-note" appReveal>
-        Most of these projects were delivered in enterprise environments and are presented in an
-        anonymized form for confidentiality reasons.
-      </p>
-      <div class="projects-grid">
-        @for (project of content.projects; track project.id) {
-          <article class="project-card" appReveal>
-            <header class="project-head">
-              <h3>{{ project.title }}</h3>
-              <span class="project-role">{{ project.role }}</span>
-            </header>
-            <p class="project-desc">{{ project.summary }}</p>
-            <ul class="project-highlights">
-              @for (highlight of project.highlights; track $index) {
-                <li>{{ highlight }}</li>
-              }
-            </ul>
-            <ul class="tag-list project-tags">
-              @for (tag of project.tags; track tag) {
-                <li>{{ tag }}</li>
-              }
-            </ul>
-            <a class="project-link" [routerLink]="['/projects', project.slug]">Read more →</a>
-          </article>
-        }
-      </div>
-    </div>
-  </section>
-
   <!-- EXPERIENCE -->
-  <section class="section" id="experience">
+  <section class="section" id="experience" style="padding-top: 20px;">
     <div class="container">
-      <p class="section-eyebrow" appReveal>Experience</p>
-      <h2 class="section-title" appReveal>Professional journey</h2>
+      <div class="section-head" appReveal>
+        <p class="section-eyebrow">{{ 'experience.eyebrow' | transloco }}</p>
+        <h2 class="section-title">{{ 'experience.title' | transloco }}</h2>
+      </div>
       <ol class="timeline">
         @for (experience of content.experiences; track experience.id) {
           <li class="timeline-item" appReveal>
             <div class="timeline-marker" aria-hidden="true"></div>
-            <div class="timeline-content">
+            <div class="timeline-head">
               <h3>{{ experience.title }}</h3>
-              <p class="timeline-org">
-                {{ experience.organization }}
-                @if (experience.period) {
-                  <span class="timeline-period">· {{ experience.period }}</span>
-                }
-              </p>
-              <ul>
-                @for (bullet of experience.bullets; track $index) {
-                  <li>{{ bullet }}</li>
-                }
-              </ul>
+              <span class="timeline-org">{{ experience.organization }}</span>
+              @if (experience.period) {
+                <span class="timeline-period">· {{ experience.period }}</span>
+              }
             </div>
+            <ul>
+              @for (bullet of experience.bullets; track $index) {
+                <li>{{ bullet }}</li>
+              }
+            </ul>
           </li>
         }
       </ol>
@@ -144,14 +166,16 @@
   </section>
 
   <!-- WHY WORK WITH ME -->
-  <section class="section section-alt" id="value">
+  <section class="section" id="values" style="padding-top: 20px;">
     <div class="container">
-      <p class="section-eyebrow" appReveal>Why Work With Me</p>
-      <h2 class="section-title" appReveal>A developer who thinks in business outcomes</h2>
-      <div class="cards-grid">
+      <div class="section-head" appReveal>
+        <p class="section-eyebrow">{{ 'values.eyebrow' | transloco }}</p>
+        <h2 class="section-title">{{ 'values.title' | transloco }}</h2>
+      </div>
+      <div class="values-grid">
         @for (value of content.values; track value.id) {
-          <div class="card" appReveal>
-            <h3 class="gradient-text">{{ value.title }}</h3>
+          <div class="value-item" appReveal>
+            <h3>{{ value.title }}</h3>
             <p>{{ value.description }}</p>
           </div>
         }
@@ -160,17 +184,19 @@
   </section>
 
   <!-- CONTACT CTA -->
-  <section class="section" id="contact-cta">
-    <div class="container" style="text-align: center;">
-      <p class="section-eyebrow" appReveal>Contact</p>
-      <h2 class="section-title" appReveal>Available for international opportunities</h2>
-      <p class="contact-lead" appReveal style="margin-left: auto; margin-right: auto;">
-        {{ content.settings.contact_lead }}
-      </p>
-      <div class="contact-actions" appReveal style="justify-content: center;">
-        <a class="btn btn-primary" routerLink="/contact">Send me a message</a>
-        <a class="btn btn-secondary" [href]="content.settings.linkedin_url" target="_blank" rel="noopener">LinkedIn</a>
-        <a class="btn btn-secondary" [href]="content.settings.github_url" target="_blank" rel="noopener">GitHub</a>
+  <section class="section" id="contact-cta" style="padding-top: 30px;">
+    <div class="container" appReveal>
+      <div class="section-head">
+        <p class="section-eyebrow">{{ 'contact.eyebrow' | transloco }}</p>
+        <h2 class="section-title">{{ 'contact.title' | transloco }}</h2>
+        <p class="contact-lead">{{ content.settings.contact_lead }}</p>
+      </div>
+      <div class="hero-actions">
+        <a class="btn btn-primary" [routerLink]="['/', language.lang(), 'contact']">
+          {{ 'hero.contactMe' | transloco }}</a>
+        <a class="btn btn-outline" [href]="content.settings.linkedin_url" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn btn-outline" [href]="content.settings.github_url" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn btn-quiet" [href]="content.settings.cv_url" download>{{ 'hero.downloadCv' | transloco }}</a>
       </div>
     </div>
   </section>
@@ -178,6 +204,5 @@
 } @else {
   <div class="loading-state">
     <div class="spinner" aria-hidden="true"></div>
-    Loading…
   </div>
 }

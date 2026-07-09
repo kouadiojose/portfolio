@@ -14,7 +14,6 @@ import { AuthService } from '../../core/auth.service';
           <a routerLink="settings" routerLinkActive="is-active">Site content</a>
           <a routerLink="projects" routerLinkActive="is-active">Projects</a>
           <a routerLink="experiences" routerLinkActive="is-active">Experience</a>
-          <a routerLink="expertise" routerLinkActive="is-active">Expertise</a>
           <a routerLink="stack" routerLinkActive="is-active">Tech stack</a>
           <a routerLink="values" routerLinkActive="is-active">Value props</a>
           <a href="#" (click)="logout($event)">Sign out</a>

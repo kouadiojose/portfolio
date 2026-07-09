@@ -5,12 +5,9 @@ from sqlalchemy.orm import Session
 from .. import schemas
 from ..database import get_db
 from ..models import (
-    AdminUser,
     ContactMessage,
     Experience,
-    ExpertiseItem,
     Project,
-    SiteSettings,
     StackItem,
     ValueProp,
 )
@@ -34,10 +31,7 @@ def read_settings(db: Session = Depends(get_db)):
 @router.put("/settings", response_model=schemas.SiteSettingsOut)
 def update_settings(payload: schemas.SiteSettingsUpdate, db: Session = Depends(get_db)):
     settings = get_site_settings(db)
-    data = payload.model_dump(exclude_unset=True)
-    if "facts" in data and data["facts"] is not None:
-        data["facts"] = [dict(f) for f in data["facts"]]
-    for key, value in data.items():
+    for key, value in payload.model_dump(exclude_unset=True).items():
         setattr(settings, key, value)
     db.commit()
     db.refresh(settings)
@@ -101,28 +95,6 @@ def admin_update_project(item_id: int, payload: schemas.ProjectBase, db: Session
 @router.delete("/projects/{item_id}", status_code=status.HTTP_204_NO_CONTENT)
 def admin_delete_project(item_id: int, db: Session = Depends(get_db)):
     _delete(db, Project, item_id)
-
-
-# ---------- Expertise ----------
-
-@router.get("/expertise", response_model=list[schemas.ExpertiseOut])
-def admin_list_expertise(db: Session = Depends(get_db)):
-    return db.query(ExpertiseItem).order_by(ExpertiseItem.sort_order).all()
-
-
-@router.post("/expertise", response_model=schemas.ExpertiseOut, status_code=status.HTTP_201_CREATED)
-def admin_create_expertise(payload: schemas.ExpertiseBase, db: Session = Depends(get_db)):
-    return _create(db, ExpertiseItem, payload)
-
-
-@router.put("/expertise/{item_id}", response_model=schemas.ExpertiseOut)
-def admin_update_expertise(item_id: int, payload: schemas.ExpertiseBase, db: Session = Depends(get_db)):
-    return _update(db, ExpertiseItem, item_id, payload)
-
-
-@router.delete("/expertise/{item_id}", status_code=status.HTTP_204_NO_CONTENT)
-def admin_delete_expertise(item_id: int, db: Session = Depends(get_db)):
-    _delete(db, ExpertiseItem, item_id)
 
 
 # ---------- Stack ----------

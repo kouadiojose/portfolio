@@ -1,6 +1,12 @@
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
+
+# Translatable fields as stored in the database / edited in the admin:
+# {"en": "...", "fr": "..."} (or lists of strings per language).
+I18nStr = dict[str, str]
+I18nList = dict[str, list[str]]
 
 
 # ---------- Auth ----------
@@ -26,23 +32,18 @@ class PasswordChange(BaseModel):
     new_password: str = Field(min_length=8)
 
 
-# ---------- Site settings ----------
+# ---------- Public (language-resolved) schemas ----------
 
-class Fact(BaseModel):
-    label: str
-    value: str
-
-
-class SiteSettingsOut(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+class PublicSettings(BaseModel):
     full_name: str
     headline: str
-    hero_eyebrow: str
+    tagline: str
     hero_subtitle: str
     availability: str
+    impacts: list[str]
     about_title: str
     about_paragraphs: list[str]
-    facts: list[Fact]
+    principles: list[str]
     email: str
     linkedin_url: str
     github_url: str
@@ -50,38 +51,93 @@ class SiteSettingsOut(BaseModel):
     contact_lead: str
 
 
+class PublicStackItem(BaseModel):
+    id: int
+    category: str
+    name: str
+    sort_order: int
+
+
+class PublicProject(BaseModel):
+    id: int
+    slug: str
+    visual: str
+    title: str
+    role: str
+    summary: str
+    highlights: list[str]
+    context: str
+    problem: str
+    approach: str
+    contributions: list[str]
+    learnings: str
+    tags: list[str]
+    sort_order: int
+
+
+class PublicExperience(BaseModel):
+    id: int
+    title: str
+    organization: str
+    period: str
+    bullets: list[str]
+    sort_order: int
+
+
+class PublicValueProp(BaseModel):
+    id: int
+    title: str
+    description: str
+    sort_order: int
+
+
+class PortfolioContent(BaseModel):
+    settings: PublicSettings
+    stack: list[PublicStackItem]
+    projects: list[PublicProject]
+    experiences: list[PublicExperience]
+    values: list[PublicValueProp]
+
+
+# ---------- Admin (raw i18n) schemas ----------
+
+class SiteSettingsOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    full_name: str
+    headline: I18nStr
+    tagline: I18nStr
+    hero_subtitle: I18nStr
+    availability: I18nStr
+    impacts: I18nList
+    about_title: I18nStr
+    about_paragraphs: I18nList
+    principles: I18nList
+    email: str
+    linkedin_url: str
+    github_url: str
+    cv_url: I18nStr
+    contact_lead: I18nStr
+
+
 class SiteSettingsUpdate(BaseModel):
     full_name: str | None = None
-    headline: str | None = None
-    hero_eyebrow: str | None = None
-    hero_subtitle: str | None = None
-    availability: str | None = None
-    about_title: str | None = None
-    about_paragraphs: list[str] | None = None
-    facts: list[Fact] | None = None
+    headline: I18nStr | None = None
+    tagline: I18nStr | None = None
+    hero_subtitle: I18nStr | None = None
+    availability: I18nStr | None = None
+    impacts: I18nList | None = None
+    about_title: I18nStr | None = None
+    about_paragraphs: I18nList | None = None
+    principles: I18nList | None = None
     email: str | None = None
     linkedin_url: str | None = None
     github_url: str | None = None
-    cv_url: str | None = None
-    contact_lead: str | None = None
-
-
-# ---------- Content entities ----------
-
-class ExpertiseBase(BaseModel):
-    title: str
-    description: str = ""
-    icon: str = "app"
-    sort_order: int = 0
-
-
-class ExpertiseOut(ExpertiseBase):
-    model_config = ConfigDict(from_attributes=True)
-    id: int
+    cv_url: I18nStr | None = None
+    contact_lead: I18nStr | None = None
 
 
 class StackItemBase(BaseModel):
-    category: str
+    category: I18nStr
     name: str
     sort_order: int = 0
 
@@ -93,11 +149,16 @@ class StackItemOut(StackItemBase):
 
 class ProjectBase(BaseModel):
     slug: str
-    title: str
-    role: str = ""
-    summary: str = ""
-    context: str = ""
-    highlights: list[str] = []
+    visual: str = "dashboard"
+    title: I18nStr
+    role: I18nStr = {}
+    summary: I18nStr = {}
+    highlights: I18nList = {}
+    context: I18nStr = {}
+    problem: I18nStr = {}
+    approach: I18nStr = {}
+    contributions: I18nList = {}
+    learnings: I18nStr = {}
     tags: list[str] = []
     featured: bool = True
     sort_order: int = 0
@@ -109,10 +170,10 @@ class ProjectOut(ProjectBase):
 
 
 class ExperienceBase(BaseModel):
-    title: str
+    title: I18nStr
     organization: str = ""
-    period: str = ""
-    bullets: list[str] = []
+    period: I18nStr = {}
+    bullets: I18nList = {}
     sort_order: int = 0
 
 
@@ -122,8 +183,8 @@ class ExperienceOut(ExperienceBase):
 
 
 class ValuePropBase(BaseModel):
-    title: str
-    description: str = ""
+    title: I18nStr
+    description: I18nStr = {}
     sort_order: int = 0
 
 
@@ -139,6 +200,7 @@ class ContactCreate(BaseModel):
     email: EmailStr
     subject: str = Field(default="", max_length=255)
     body: str = Field(min_length=10, max_length=5000)
+    language: Literal["en", "fr"] = "en"
 
 
 class ContactMessageOut(BaseModel):
@@ -148,16 +210,6 @@ class ContactMessageOut(BaseModel):
     email: str
     subject: str
     body: str
+    language: str
     created_at: datetime
     read: bool
-
-
-# ---------- Aggregated public payload ----------
-
-class PortfolioContent(BaseModel):
-    settings: SiteSettingsOut
-    expertise: list[ExpertiseOut]
-    stack: list[StackItemOut]
-    projects: list[ProjectOut]
-    experiences: list[ExperienceOut]
-    values: list[ValuePropOut]

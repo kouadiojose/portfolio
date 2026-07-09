@@ -23,6 +23,7 @@ import { ContactMessage } from '../../core/models';
               <span class="message-meta"> · {{ message.email }}</span>
             </div>
             <div>
+              <span class="badge badge-lang">{{ message.language === 'fr' ? 'Français' : 'English' }}</span>
               <span class="badge" [class.badge-new]="!message.read" [class.badge-read]="message.read">
                 {{ message.read ? 'Read' : 'New' }}
               </span>

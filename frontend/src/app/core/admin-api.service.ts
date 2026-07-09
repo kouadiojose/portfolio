@@ -3,27 +3,26 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import {
+  AdminExperience,
+  AdminProject,
+  AdminSiteSettings,
+  AdminStackItem,
+  AdminValueProp,
   ContactMessage,
-  Experience,
-  ExpertiseItem,
-  Project,
-  SiteSettings,
-  StackItem,
-  ValueProp,
 } from './models';
 
-/** Authenticated API used by the admin dashboard. */
+/** Authenticated API used by the admin dashboard (raw i18n payloads). */
 @Injectable({ providedIn: 'root' })
 export class AdminApiService {
   private http = inject(HttpClient);
   private base = '/api/admin';
 
   // Site settings
-  getSettings(): Observable<SiteSettings> {
-    return this.http.get<SiteSettings>(`${this.base}/settings`);
+  getSettings(): Observable<AdminSiteSettings> {
+    return this.http.get<AdminSiteSettings>(`${this.base}/settings`);
   }
-  updateSettings(payload: Partial<SiteSettings>): Observable<SiteSettings> {
-    return this.http.put<SiteSettings>(`${this.base}/settings`, payload);
+  updateSettings(payload: Partial<AdminSiteSettings>): Observable<AdminSiteSettings> {
+    return this.http.put<AdminSiteSettings>(`${this.base}/settings`, payload);
   }
 
   // Generic CRUD (entity name maps to the API path)
@@ -41,11 +40,10 @@ export class AdminApiService {
   }
 
   // Typed conveniences
-  listProjects() { return this.list<Project>('projects'); }
-  listExpertise() { return this.list<ExpertiseItem>('expertise'); }
-  listStack() { return this.list<StackItem>('stack'); }
-  listExperiences() { return this.list<Experience>('experiences'); }
-  listValues() { return this.list<ValueProp>('values'); }
+  listProjects() { return this.list<AdminProject>('projects'); }
+  listStack() { return this.list<AdminStackItem>('stack'); }
+  listExperiences() { return this.list<AdminExperience>('experiences'); }
+  listValues() { return this.list<AdminValueProp>('values'); }
 
   // Messages inbox
   listMessages(): Observable<ContactMessage[]> {
