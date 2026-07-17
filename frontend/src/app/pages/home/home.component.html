@@ -156,19 +156,23 @@
       <ol class="timeline">
         @for (experience of content.experiences; track experience.id) {
           <li class="timeline-item" appReveal>
-            <span class="org-badge" aria-hidden="true">{{ orgInitial(experience.organization) }}</span>
-            <div class="timeline-head">
-              <h3>{{ experience.title }}</h3>
-              <span class="timeline-org">{{ experience.organization }}</span>
-              @if (experience.period) {
-                <span class="timeline-period">· {{ experience.period }}</span>
-              }
+            <div class="timeline-meta">
+              <span class="org-badge" aria-hidden="true">{{ orgInitial(experience.organization) }}</span>
+              <div>
+                <span class="timeline-org">{{ experience.organization }}</span>
+                @if (experience.period) {
+                  <span class="timeline-period">{{ experience.period }}</span>
+                }
+              </div>
             </div>
-            <ul>
-              @for (bullet of experience.bullets; track $index) {
-                <li>{{ bullet }}</li>
-              }
-            </ul>
+            <div class="timeline-content">
+              <h3>{{ experience.title }}</h3>
+              <ul>
+                @for (bullet of experience.bullets; track $index) {
+                  <li>{{ bullet }}</li>
+                }
+              </ul>
+            </div>
           </li>
         }
       </ol>
@@ -197,17 +201,19 @@
   <section class="section" id="contact-cta">
     <div class="container">
       <div class="cta-band on-deep" appReveal>
-        <div class="section-head" style="margin-bottom: 26px;">
-          <p class="section-eyebrow">{{ 'contact.eyebrow' | transloco }}</p>
-          <h2 class="section-title">{{ 'contact.title' | transloco }}</h2>
-          <p class="contact-lead">{{ content.settings.contact_lead }}</p>
-        </div>
-        <div class="hero-actions" style="margin-bottom: 0;">
-          <a class="btn btn-primary" [routerLink]="['/', language.lang(), 'contact']">
-            {{ 'hero.contactMe' | transloco }}</a>
-          <a class="btn btn-outline" [href]="content.settings.linkedin_url" target="_blank" rel="noopener">LinkedIn</a>
-          <a class="btn btn-outline" [href]="content.settings.github_url" target="_blank" rel="noopener">GitHub</a>
-          <a class="btn btn-quiet" [href]="content.settings.cv_url" download>{{ 'hero.downloadCv' | transloco }}</a>
+        <div class="cta-inner">
+          <div>
+            <p class="section-eyebrow">{{ 'contact.eyebrow' | transloco }}</p>
+            <h2 class="section-title">{{ 'contact.title' | transloco }}</h2>
+            <p class="contact-lead" style="margin-bottom: 0;">{{ content.settings.contact_lead }}</p>
+          </div>
+          <div class="cta-actions">
+            <a class="btn btn-primary" [routerLink]="['/', language.lang(), 'contact']">
+              {{ 'hero.contactMe' | transloco }}</a>
+            <a class="btn btn-outline" [href]="content.settings.linkedin_url" target="_blank" rel="noopener">LinkedIn</a>
+            <a class="btn btn-outline" [href]="content.settings.github_url" target="_blank" rel="noopener">GitHub</a>
+            <a class="btn btn-quiet" [href]="content.settings.cv_url" download>{{ 'hero.downloadCv' | transloco }}</a>
+          </div>
         </div>
       </div>
     </div>

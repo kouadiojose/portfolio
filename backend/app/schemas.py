@@ -174,7 +174,7 @@ class ProjectOut(ProjectBase):
 
 class ExperienceBase(BaseModel):
     title: I18nStr
-    organization: str = ""
+    organization: I18nStr = {}
     period: I18nStr = {}
     bullets: I18nList = {}
     sort_order: int = 0

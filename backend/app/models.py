@@ -81,7 +81,7 @@ class Experience(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     title: Mapped[dict] = mapped_column(JSON, default=dict)      # i18n str
-    organization: Mapped[str] = mapped_column(String(200), default="")
+    organization: Mapped[dict] = mapped_column(JSON, default=dict)  # i18n str
     period: Mapped[dict] = mapped_column(JSON, default=dict)     # i18n str
     bullets: Mapped[dict] = mapped_column(JSON, default=dict)    # i18n list
     sort_order: Mapped[int] = mapped_column(Integer, default=0)

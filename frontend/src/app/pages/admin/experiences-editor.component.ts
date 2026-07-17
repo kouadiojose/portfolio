@@ -31,15 +31,19 @@ import { fromLines, fromStr, toLines, toStr } from './i18n-form.util';
               <input formControlName="title_fr">
             </div>
           </div>
-          <div class="form-row">
+          <div class="i18n-pair">
             <div class="form-field">
-              <label>Organization</label>
-              <input formControlName="organization">
+              <label>Organization <span class="i18n-tag">EN</span></label>
+              <input formControlName="organization_en">
             </div>
-            <div class="form-field" style="max-width: 160px;">
-              <label>Sort order</label>
-              <input type="number" formControlName="sort_order">
+            <div class="form-field">
+              <label>Organization <span class="i18n-tag">FR</span></label>
+              <input formControlName="organization_fr">
             </div>
+          </div>
+          <div class="form-field" style="max-width: 160px;">
+            <label>Sort order</label>
+            <input type="number" formControlName="sort_order">
           </div>
           <div class="i18n-pair">
             <div class="form-field">
@@ -80,7 +84,7 @@ import { fromLines, fromStr, toLines, toStr } from './i18n-form.util';
             <tr>
               <td>{{ experience.sort_order }}</td>
               <td><strong>{{ experience.title['en'] }}</strong></td>
-              <td>{{ experience.organization }}</td>
+              <td>{{ experience.organization['en'] }}</td>
               <td class="row-actions">
                 <button class="btn btn-outline btn-sm" (click)="startEdit(experience)">Edit</button>
                 <button class="btn btn-danger btn-sm" (click)="remove(experience)">Delete</button>
@@ -105,7 +109,8 @@ export class ExperiencesEditorComponent {
   form = this.fb.nonNullable.group({
     title_en: ['', Validators.required],
     title_fr: [''],
-    organization: [''],
+    organization_en: [''],
+    organization_fr: [''],
     period_en: [''],
     period_fr: [''],
     bullets_en: [''],
@@ -129,7 +134,8 @@ export class ExperiencesEditorComponent {
   startEdit(e: AdminExperience): void {
     this.form.patchValue({
       title_en: toStr(e.title, 'en'), title_fr: toStr(e.title, 'fr'),
-      organization: e.organization,
+      organization_en: toStr(e.organization, 'en'),
+      organization_fr: toStr(e.organization, 'fr'),
       period_en: toStr(e.period, 'en'), period_fr: toStr(e.period, 'fr'),
       bullets_en: toLines(e.bullets, 'en'), bullets_fr: toLines(e.bullets, 'fr'),
       sort_order: e.sort_order,
@@ -144,7 +150,7 @@ export class ExperiencesEditorComponent {
     const r = this.form.getRawValue();
     const payload = {
       title: fromStr(r.title_en, r.title_fr),
-      organization: r.organization,
+      organization: fromStr(r.organization_en, r.organization_fr),
       period: fromStr(r.period_en, r.period_fr),
       bullets: fromLines(r.bullets_en, r.bullets_fr),
       sort_order: r.sort_order,

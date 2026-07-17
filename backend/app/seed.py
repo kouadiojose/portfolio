@@ -462,7 +462,7 @@ def seed() -> None:
                             "en": "Senior Full Stack Developer — Data Engineering & AI",
                             "fr": "Développeur Full Stack Sénior — Data Engineering & IA",
                         },
-                        organization="Orange Côte d'Ivoire, Abidjan",
+                        organization={"en": "Orange Côte d'Ivoire, Abidjan", "fr": "Orange Côte d'Ivoire, Abidjan"},
                         period={"en": "Aug 2025 — present", "fr": "Août 2025 — aujourd'hui"},
                         bullets={
                             "en": [
@@ -485,7 +485,7 @@ def seed() -> None:
                             "en": "Senior Full Stack Developer",
                             "fr": "Développeur Full Stack Sénior",
                         },
-                        organization="Markel Technology · clients in Canada, Burundi & Côte d'Ivoire",
+                        organization={"en": "Markel Technology · clients in Canada, Burundi & Côte d'Ivoire", "fr": "Markel Technology · clients au Canada, au Burundi et en Côte d'Ivoire"},
                         period={"en": "2017 — Jul 2025", "fr": "2017 — juillet 2025"},
                         bullets={
                             "en": [
@@ -508,7 +508,7 @@ def seed() -> None:
                             "en": "Web Developer",
                             "fr": "Développeur Web",
                         },
-                        organization="Soutra Vision & Ministry of Higher Education (MESRS), Abidjan",
+                        organization={"en": "Soutra Vision & Ministry of Higher Education (MESRS), Abidjan", "fr": "Soutra Vision & Ministère de l'Enseignement Supérieur (MESRS), Abidjan"},
                         period={"en": "2015 — 2017", "fr": "2015 — 2017"},
                         bullets={
                             "en": [

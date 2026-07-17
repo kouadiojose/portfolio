@@ -129,7 +129,7 @@ export interface AdminProject {
 export interface AdminExperience {
   id: number;
   title: I18nStr;
-  organization: string;
+  organization: I18nStr;
   period: I18nStr;
   bullets: I18nList;
   sort_order: number;

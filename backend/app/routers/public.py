@@ -68,7 +68,7 @@ def _experience_public(e: Experience, lang: str) -> schemas.PublicExperience:
     return schemas.PublicExperience(
         id=e.id,
         title=resolve(e.title, lang),
-        organization=e.organization,
+        organization=resolve(e.organization, lang),
         period=resolve(e.period, lang),
         bullets=resolve(e.bullets, lang) or [],
         sort_order=e.sort_order,
