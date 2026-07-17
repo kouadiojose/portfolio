@@ -7,6 +7,7 @@ import { map } from 'rxjs';
 import { ApiService } from '../../core/api.service';
 import { LanguageService } from '../../core/language.service';
 import { StackItem } from '../../core/models';
+import { CountUpDirective } from '../../shared/count-up.directive';
 import { HeroVisualComponent } from '../../shared/hero-visual.component';
 import { ProjectVisualComponent } from '../../shared/project-visual.component';
 import { RevealDirective } from '../../shared/reveal.directive';
@@ -17,6 +18,7 @@ import { RevealDirective } from '../../shared/reveal.directive';
     AsyncPipe,
     RouterLink,
     TranslocoPipe,
+    CountUpDirective,
     HeroVisualComponent,
     ProjectVisualComponent,
     RevealDirective,
@@ -45,5 +47,15 @@ export class HomeComponent {
 
   constructor() {
     this.language.setPageMeta('meta.homeTitle', 'meta.homeDescription');
+  }
+
+  /** Split "8+ years of experience" into a big number ("8+") and a label. */
+  impactParts(impact: string): { number: string | null; label: string } {
+    const match = impact.match(/^(\d+[+%]?)\s+(.*)$/);
+    return match ? { number: match[1], label: match[2] } : { number: null, label: impact };
+  }
+
+  orgInitial(organization: string): string {
+    return (organization.trim()[0] ?? '•').toUpperCase();
   }
 }
