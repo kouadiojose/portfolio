@@ -15,6 +15,7 @@ export interface SiteSettings {
   about_paragraphs: string[];
   principles: string[];
   email: string;
+  phone: string;
   linkedin_url: string;
   github_url: string;
   cv_url: string;
@@ -100,6 +101,7 @@ export interface AdminSiteSettings {
   about_paragraphs: I18nList;
   principles: I18nList;
   email: string;
+  phone: string;
   linkedin_url: string;
   github_url: string;
   cv_url: I18nStr;

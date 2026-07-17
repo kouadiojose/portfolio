@@ -71,6 +71,54 @@ import { Component, input } from '@angular/core';
             <text x="160" y="132" text-anchor="middle" fill="rgba(154,168,192,0.7)" font-size="10" font-family="monospace">REST · business rules · workflows</text>
           </svg>
         }
+        @case ('bank') {
+          <svg viewBox="0 0 320 160" fill="none">
+            <defs>
+              <linearGradient id="pv-b" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#6d9dff"/><stop offset="1" stop-color="#9d7bff"/>
+              </linearGradient>
+            </defs>
+            <path d="M40 62 L90 34 L140 62 Z" stroke="url(#pv-b)" stroke-width="2.4" fill="rgba(109,125,255,0.08)"/>
+            <g stroke="#6d9dff" stroke-width="2.2">
+              <line x1="56" y1="66" x2="56" y2="112"/><line x1="78" y1="66" x2="78" y2="112"/>
+              <line x1="100" y1="66" x2="100" y2="112"/><line x1="122" y1="66" x2="122" y2="112"/>
+            </g>
+            <line x1="42" y1="118" x2="138" y2="118" stroke="url(#pv-b)" stroke-width="2.6"/>
+            <g font-family="monospace" font-size="10" fill="rgba(154,168,192,0.9)">
+              <text x="176" y="48">accounts</text>
+              <text x="246" y="48">loans</text>
+              <text x="176" y="84">cards</text>
+              <text x="240" y="84">transfers</text>
+              <text x="176" y="120">agencies</text>
+              <text x="246" y="120">audit</text>
+            </g>
+            <g stroke="rgba(148,163,184,0.4)">
+              <rect x="166" y="32" width="60" height="24" rx="6"/><rect x="236" y="32" width="52" height="24" rx="6"/>
+              <rect x="166" y="68" width="54" height="24" rx="6"/><rect x="230" y="68" width="62" height="24" rx="6"/>
+              <rect x="166" y="104" width="62" height="24" rx="6"/><rect x="238" y="104" width="50" height="24" rx="6"/>
+            </g>
+          </svg>
+        }
+        @case ('transfer') {
+          <svg viewBox="0 0 320 160" fill="none">
+            <defs>
+              <linearGradient id="pv-t" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stop-color="#6d9dff"/><stop offset="1" stop-color="#4fd8e8"/>
+              </linearGradient>
+            </defs>
+            <circle cx="160" cy="80" r="52" stroke="rgba(148,163,184,0.4)" stroke-width="1.8"/>
+            <ellipse cx="160" cy="80" rx="24" ry="52" stroke="rgba(148,163,184,0.3)" stroke-width="1.5"/>
+            <line x1="108" y1="80" x2="212" y2="80" stroke="rgba(148,163,184,0.3)" stroke-width="1.5"/>
+            <path d="M112 62 Q140 44 168 58" stroke="rgba(148,163,184,0.3)" stroke-width="1.5" fill="none"/>
+            <path d="M60 108 Q160 -6 260 96" stroke="url(#pv-t)" stroke-width="2.6" stroke-dasharray="6 6" fill="none"/>
+            <circle cx="60" cy="108" r="6" fill="#6d9dff"/>
+            <circle cx="260" cy="96" r="6" fill="#4fd8e8"/>
+            <rect x="26" y="118" width="70" height="22" rx="6" fill="rgba(109,157,255,0.1)" stroke="rgba(109,157,255,0.4)"/>
+            <text x="61" y="133" text-anchor="middle" fill="#b9ccff" font-size="10.5" font-family="monospace">CAD · EUR</text>
+            <rect x="226" y="106" width="70" height="22" rx="6" fill="rgba(79,216,232,0.1)" stroke="rgba(79,216,232,0.4)"/>
+            <text x="261" y="121" text-anchor="middle" fill="#4fd8e8" font-size="10.5" font-family="monospace">BIF · momo</text>
+          </svg>
+        }
         @case ('drone') {
           <svg viewBox="0 0 320 160" fill="none">
             <g stroke="rgba(148,163,184,0.18)">

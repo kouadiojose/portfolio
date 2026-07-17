@@ -33,6 +33,8 @@ import { fromLines, fromStr, toLines, toStr } from './i18n-form.util';
                 <option value="monitoring">Monitoring chart</option>
                 <option value="security">Security shield</option>
                 <option value="integration">System integration</option>
+                <option value="bank">Banking modules</option>
+                <option value="transfer">Money transfer / globe</option>
                 <option value="drone">Drone / map</option>
               </select>
             </div>

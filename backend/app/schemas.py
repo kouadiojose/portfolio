@@ -45,6 +45,7 @@ class PublicSettings(BaseModel):
     about_paragraphs: list[str]
     principles: list[str]
     email: str
+    phone: str
     linkedin_url: str
     github_url: str
     cv_url: str
@@ -113,6 +114,7 @@ class SiteSettingsOut(BaseModel):
     about_paragraphs: I18nList
     principles: I18nList
     email: str
+    phone: str
     linkedin_url: str
     github_url: str
     cv_url: I18nStr
@@ -130,6 +132,7 @@ class SiteSettingsUpdate(BaseModel):
     about_paragraphs: I18nList | None = None
     principles: I18nList | None = None
     email: str | None = None
+    phone: str | None = None
     linkedin_url: str | None = None
     github_url: str | None = None
     cv_url: I18nStr | None = None

@@ -81,8 +81,8 @@ def seed() -> None:
                         "fr": "Je conçois des plateformes sécurisées, évolutives et orientées métier pour les environnements d'entreprise.",
                     },
                     hero_subtitle={
-                        "en": "Full stack developer focused on Angular, Python/FastAPI, PostgreSQL, Docker, Keycloak and API integrations.",
-                        "fr": "Développeur full stack spécialisé en Angular, Python/FastAPI, PostgreSQL, Docker, Keycloak et intégrations d'API.",
+                        "en": "Focused on Angular, Python/FastAPI, PostgreSQL, Docker and Keycloak — with a strong footing in data engineering and AI integration.",
+                        "fr": "Spécialisé en Angular, Python/FastAPI, PostgreSQL, Docker et Keycloak — avec une solide pratique du data engineering et de l'intégration d'IA.",
                     },
                     availability={
                         "en": "Available for international opportunities",
@@ -91,14 +91,14 @@ def seed() -> None:
                     impacts={
                         "en": [
                             "8+ years of experience",
-                            "Enterprise applications",
-                            "Secure API integrations",
+                            "10+ applications shipped",
+                            "Telecom, fintech & NGO sectors",
                             "Available for relocation",
                         ],
                         "fr": [
                             "8+ ans d'expérience",
-                            "Applications d'entreprise",
-                            "Intégrations d'API sécurisées",
+                            "10+ applications livrées",
+                            "Télécoms, fintech & ONG",
                             "Mobilité internationale",
                         ],
                     },
@@ -108,11 +108,11 @@ def seed() -> None:
                     },
                     about_paragraphs={
                         "en": [
-                            "I'm a full stack developer based in Côte d'Ivoire, currently working as an IT Consultant in enterprise environments. I design and build business applications, secure APIs, dashboards and integration layers that help teams operate more reliably.",
+                            "I'm a senior full stack developer based in Abidjan, Côte d'Ivoire, currently working on data & AI projects at a major telecom operator. Over 8+ years I have designed and shipped business applications, secure APIs, dashboards and integration layers for the telecom, finance and non-profit sectors.",
                             "I enjoy working at the intersection of frontend, backend, data and business processes — turning complex requirements into useful and maintainable software.",
                         ],
                         "fr": [
-                            "Je suis développeur full stack basé en Côte d'Ivoire, actuellement consultant IT dans des environnements d'entreprise. Je conçois et développe des applications métier, des APIs sécurisées, des tableaux de bord et des couches d'intégration qui aident les équipes à opérer plus sereinement.",
+                            "Je suis développeur full stack senior basé à Abidjan, en Côte d'Ivoire, et je travaille actuellement sur des projets data & IA chez un grand opérateur télécom. En plus de 8 ans, j'ai conçu et livré des applications métier, des APIs sécurisées, des tableaux de bord et des couches d'intégration pour les secteurs des télécoms, de la finance et des ONG.",
                             "J'aime travailler à l'intersection du frontend, du backend, de la donnée et des processus métier — transformer des besoins complexes en logiciels utiles et maintenables.",
                         ],
                     },
@@ -130,9 +130,10 @@ def seed() -> None:
                             "Livrer des logiciels fiables",
                         ],
                     },
-                    email="kouadiojose@gmail.com",
-                    linkedin_url="https://www.linkedin.com/in/yeo-yedjande",
-                    github_url="https://github.com/kouadiojose",
+                    email="yeoyedjande@gmail.com",
+                    phone="+225 07 475 504 17",
+                    linkedin_url="https://www.linkedin.com/in/yeoyedjande/",
+                    github_url="https://github.com/yeoyedjande",
                     cv_url={
                         "en": "/assets/cv/CV_EN.pdf",
                         "fr": "/assets/cv/CV_FR.pdf",
@@ -147,13 +148,13 @@ def seed() -> None:
         if not db.query(StackItem).first():
             stack = [
                 ({"en": "Frontend", "fr": "Frontend"},
-                 ["Angular", "TypeScript", "JavaScript", "HTML5", "CSS3", "PrimeNG", "Bootstrap"]),
+                 ["Angular", "React", "TypeScript", "JavaScript", "PrimeNG", "Bootstrap"]),
                 ({"en": "Backend", "fr": "Backend"},
-                 ["Python", "FastAPI", "PHP", "Laravel", "REST APIs"]),
-                ({"en": "Database", "fr": "Bases de données"},
-                 ["PostgreSQL", "MySQL", "SQL"]),
-                ({"en": "DevOps", "fr": "DevOps"},
-                 ["Docker", "GitLab CI/CD", "Git", "Linux", "Nginx"]),
+                 ["Python", "FastAPI", "Java", "Spring Boot", "PHP", "Laravel", "Node.js", "REST APIs"]),
+                ({"en": "Data & AI", "fr": "Data & IA"},
+                 ["PostgreSQL", "MySQL", "SQL", "Starburst / Trino", "Highcharts", "Prompt Engineering"]),
+                ({"en": "DevOps & Quality", "fr": "DevOps & Qualité"},
+                 ["Docker", "GitLab CI/CD", "Jenkins", "Git", "Linux", "SonarQube", "Playwright"]),
                 ({"en": "Security", "fr": "Sécurité"},
                  ["Keycloak", "JWT", "OAuth2", "OpenID Connect"]),
             ]
@@ -279,59 +280,118 @@ def seed() -> None:
                         sort_order=2,
                     ),
                     Project(
-                        slug="secure-payment-api-integration",
-                        visual="security",
+                        slug="hopefund-microfinance-platform",
+                        visual="bank",
                         title={
-                            "en": "Secure Payment API Integration",
-                            "fr": "Intégration sécurisée d'API de paiement",
+                            "en": "HOPEFUND — Microfinance Banking Platform",
+                            "fr": "HOPEFUND — Plateforme bancaire de microfinance",
                         },
-                        role={"en": "Backend / API Developer", "fr": "Développeur Backend / API"},
+                        role={"en": "Architect & Full Stack Developer", "fr": "Architecte & Développeur Full Stack"},
                         summary={
-                            "en": "Implementation and validation of secure external payment API workflows.",
-                            "fr": "Implémentation et validation de workflows sécurisés d'API de paiement externes.",
+                            "en": "A complete banking platform digitalizing the operations of a microfinance institution in Burundi.",
+                            "fr": "Une plateforme bancaire complète digitalisant les opérations d'une institution de microfinance au Burundi.",
                         },
                         highlights={
                             "en": [
-                                "Tested encrypted PIN workflows",
-                                "Validated secure API request flows",
-                                "Supported partner integration testing",
+                                "Designed the architecture across 10+ business modules",
+                                "Covered accounts, loans, cards, transfers and agency network",
+                                "Fully digitalized the institution's daily operations",
                             ],
                             "fr": [
-                                "Tests des workflows de PIN chiffrés",
-                                "Validation des flux de requêtes API sécurisés",
-                                "Support des tests d'intégration avec les partenaires",
+                                "Conception de l'architecture sur plus de 10 modules métiers",
+                                "Couverture des comptes, prêts, cartes, virements et réseau d'agences",
+                                "Digitalisation complète des opérations quotidiennes de l'institution",
                             ],
                         },
                         context={
-                            "en": "Connecting to external payment partners required strict cryptographic and security compliance on every exchange.",
-                            "fr": "La connexion à des partenaires de paiement externes exigeait une conformité cryptographique et sécuritaire stricte sur chaque échange.",
+                            "en": "A microfinance institution in Burundi needed to digitalize its entire operations, previously managed with manual processes and disconnected tools.",
+                            "fr": "Une institution de microfinance au Burundi devait digitaliser l'ensemble de ses opérations, jusque-là gérées avec des processus manuels et des outils déconnectés.",
                         },
                         problem={
-                            "en": "Sensitive payloads (including PIN data) had to be encrypted, signed and validated end to end, following partner specifications precisely.",
-                            "fr": "Les données sensibles (y compris les PIN) devaient être chiffrées, signées et validées de bout en bout, en suivant précisément les spécifications des partenaires.",
+                            "en": "Client accounts, loans, bank cards, withdrawals, deposits, transfers and the agency network all had to live in one coherent, auditable system — with the reliability banking operations demand.",
+                            "fr": "Comptes clients, prêts, cartes bancaires, retraits, versements, virements et réseau d'agences devaient cohabiter dans un système cohérent et auditable — avec la fiabilité qu'exigent des opérations bancaires.",
                         },
                         approach={
-                            "en": "Working from partner API documentation, I implemented and tested RSA-encrypted request flows in Python on Linux, validating each workflow with Postman collections and structured test scenarios before integration.",
-                            "fr": "En partant de la documentation API des partenaires, j'ai implémenté et testé des flux de requêtes chiffrés en RSA, en Python sous Linux, en validant chaque workflow avec des collections Postman et des scénarios de test structurés avant l'intégration.",
+                            "en": "I designed the platform architecture and led its full stack development with Angular, Laravel and MySQL: a modular design where each business domain is a dedicated module sharing a common transaction and audit core, with full operation history.",
+                            "fr": "J'ai conçu l'architecture de la plateforme et mené son développement full stack avec Angular, Laravel et MySQL : une conception modulaire où chaque domaine métier est un module dédié partageant un socle commun de transactions et d'audit, avec historique complet des opérations.",
                         },
                         contributions={
                             "en": [
-                                "Implemented and tested encrypted PIN workflows",
-                                "Validated authentication and secure request flows against specifications",
-                                "Supported end-to-end integration testing with payment partners",
+                                "Designed the overall architecture covering 10+ business modules",
+                                "Built client accounts, loans, cards, withdrawals, deposits and transfers",
+                                "Modeled the agency network and full operation history",
+                                "Delivered the complete digitalization of the institution's operations",
                             ],
                             "fr": [
-                                "Implémentation et tests des workflows de PIN chiffrés",
-                                "Validation de l'authentification et des flux sécurisés selon les spécifications",
-                                "Support des tests d'intégration de bout en bout avec les partenaires de paiement",
+                                "Conception de l'architecture globale couvrant plus de 10 modules métiers",
+                                "Développement des comptes clients, prêts, cartes, retraits, versements et virements",
+                                "Modélisation du réseau d'agences et de l'historique complet des opérations",
+                                "Livraison de la digitalisation complète des opérations de l'institution",
                             ],
                         },
                         learnings={
-                            "en": "Working against external specifications sharpened my rigor: precise reading, systematic test cases and clear communication with partner teams are what make secure integrations succeed.",
-                            "fr": "Travailler sur des spécifications externes a aiguisé ma rigueur : lecture précise, cas de tests systématiques et communication claire avec les équipes partenaires font la réussite des intégrations sécurisées.",
+                            "en": "Banking systems taught me to design for auditability and failure: every operation must be traceable, reversible and consistent — principles I now apply to every enterprise platform I build.",
+                            "fr": "Les systèmes bancaires m'ont appris à concevoir pour l'auditabilité et la panne : chaque opération doit être traçable, réversible et cohérente — des principes que j'applique désormais à chaque plateforme d'entreprise.",
                         },
-                        tags=["Python", "REST APIs", "RSA Encryption", "Postman", "Linux"],
+                        tags=["Angular", "Laravel", "MySQL", "REST APIs"],
                         sort_order=3,
+                    ),
+                    Project(
+                        slug="gisabo-money-transfer",
+                        visual="transfer",
+                        title={
+                            "en": "GISABO — International Money Transfer",
+                            "fr": "GISABO — Transfert d'argent international",
+                        },
+                        role={"en": "Full Stack & Mobile Developer", "fr": "Développeur Full Stack & Mobile"},
+                        summary={
+                            "en": "A web and mobile platform for sending money from abroad to Burundi, including mobile transfers and a marketplace.",
+                            "fr": "Une plateforme web et mobile d'envoi d'argent de l'étranger vers le Burundi, incluant les transferts mobiles et une marketplace.",
+                        },
+                        highlights={
+                            "en": [
+                                "Built the full web platform and mobile apps (Android & iOS)",
+                                "Implemented international and mobile money transfers",
+                                "Delivered an integrated cross-border marketplace",
+                            ],
+                            "fr": [
+                                "Développement complet de la plateforme web et des apps mobiles (Android & iOS)",
+                                "Implémentation des transferts internationaux et mobiles",
+                                "Livraison d'une marketplace transfrontalière intégrée",
+                            ],
+                        },
+                        context={
+                            "en": "The Burundian diaspora needed a reliable way to send money and goods home from Canada and elsewhere — gisabogroup.ca serves exactly that need.",
+                            "fr": "La diaspora burundaise avait besoin d'un moyen fiable d'envoyer de l'argent et des biens depuis le Canada et ailleurs — gisabogroup.ca répond exactement à ce besoin.",
+                        },
+                        problem={
+                            "en": "Cross-border money movement combines strict correctness requirements with a consumer-grade experience across web, Android and iOS, including mobile money on the receiving side.",
+                            "fr": "Le transfert d'argent transfrontalier combine des exigences strictes de justesse avec une expérience grand public sur web, Android et iOS, y compris le mobile money côté réception.",
+                        },
+                        approach={
+                            "en": "I developed the full platform: a React web application backed by PostgreSQL and REST APIs, and the Android and iOS applications — covering transfers, mobile-money delivery and marketplace purchases end to end.",
+                            "fr": "J'ai développé la plateforme complète : une application web React appuyée sur PostgreSQL et des APIs REST, ainsi que les applications Android et iOS — couvrant transferts, remise en mobile money et achats marketplace de bout en bout.",
+                        },
+                        contributions={
+                            "en": [
+                                "Developed the React web platform and the REST API layer",
+                                "Built and shipped the Android and iOS applications",
+                                "Implemented transfer flows including mobile money delivery",
+                                "Added marketplace purchases toward Burundi",
+                            ],
+                            "fr": [
+                                "Développement de la plateforme web React et de la couche d'APIs REST",
+                                "Construction et publication des applications Android et iOS",
+                                "Implémentation des flux de transfert, y compris la remise en mobile money",
+                                "Ajout des achats marketplace vers le Burundi",
+                            ],
+                        },
+                        learnings={
+                            "en": "Shipping a consumer fintech product end to end — web, mobile and APIs — taught me to balance strict transactional correctness with a simple experience for non-technical users.",
+                            "fr": "Livrer un produit fintech grand public de bout en bout — web, mobile et APIs — m'a appris à concilier justesse transactionnelle stricte et expérience simple pour des utilisateurs non techniques.",
+                        },
+                        tags=["React", "PostgreSQL", "REST APIs", "Android", "iOS"],
+                        sort_order=4,
                     ),
                     Project(
                         slug="odoo-business-process-automation",
@@ -389,61 +449,6 @@ def seed() -> None:
                             "fr": "Une intégration ERP réussit par la clarté des processus : formaliser des règles métier implicites en contrats d'API a autant apporté à l'organisation que le code lui-même.",
                         },
                         tags=["Python", "FastAPI", "Odoo", "PostgreSQL", "REST APIs"],
-                        sort_order=4,
-                    ),
-                    Project(
-                        slug="drone-inspection-platform",
-                        visual="drone",
-                        title={
-                            "en": "Drone Inspection Platform",
-                            "fr": "Plateforme d'inspection par drone",
-                        },
-                        role={"en": "Full Stack Developer", "fr": "Développeur Full Stack"},
-                        summary={
-                            "en": "A platform for managing and visualizing drone inspection data.",
-                            "fr": "Une plateforme de gestion et de visualisation des données d'inspection par drone.",
-                        },
-                        highlights={
-                            "en": [
-                                "Built business interfaces for inspection data",
-                                "Contributed to operational workflows",
-                                "Supported data visualization needs",
-                            ],
-                            "fr": [
-                                "Développement des interfaces métier pour les données d'inspection",
-                                "Contribution aux workflows opérationnels",
-                                "Support des besoins de visualisation de données",
-                            ],
-                        },
-                        context={
-                            "en": "Field inspections by drone produce large volumes of structured data that operational teams need to browse, filter and act on.",
-                            "fr": "Les inspections de terrain par drone produisent de grands volumes de données structurées que les équipes opérationnelles doivent parcourir, filtrer et exploiter.",
-                        },
-                        problem={
-                            "en": "Inspection results were hard to exploit without dedicated business interfaces connecting the data to day-to-day operational decisions.",
-                            "fr": "Les résultats d'inspection étaient difficiles à exploiter sans interfaces métier dédiées reliant les données aux décisions opérationnelles quotidiennes.",
-                        },
-                        approach={
-                            "en": "I contributed Angular business interfaces on top of REST APIs and PostgreSQL: browsing and filtering inspection results, visualizing key data, and supporting the operational workflows of the teams using the platform.",
-                            "fr": "J'ai contribué aux interfaces métier Angular appuyées sur des APIs REST et PostgreSQL : navigation et filtrage des résultats d'inspection, visualisation des données clés, et support des workflows opérationnels des équipes utilisatrices.",
-                        },
-                        contributions={
-                            "en": [
-                                "Built business interfaces for inspection data",
-                                "Contributed to data visualization components",
-                                "Supported operational workflows of field teams",
-                            ],
-                            "fr": [
-                                "Développement des interfaces métier pour les données d'inspection",
-                                "Contribution aux composants de visualisation de données",
-                                "Support des workflows opérationnels des équipes terrain",
-                            ],
-                        },
-                        learnings={
-                            "en": "Even in a specialized domain like drone inspection, the fundamentals hold: clean data models and interfaces designed around the operators' workflow drive adoption.",
-                            "fr": "Même dans un domaine spécialisé comme l'inspection par drone, les fondamentaux tiennent : des modèles de données propres et des interfaces conçues autour du workflow des opérateurs font l'adoption.",
-                        },
-                        tags=["Angular", "REST APIs", "PostgreSQL"],
                         sort_order=5,
                     ),
                 ]
@@ -454,65 +459,67 @@ def seed() -> None:
                 [
                     Experience(
                         title={
-                            "en": "IT Consultant / Full Stack Developer",
-                            "fr": "Consultant IT / Développeur Full Stack",
+                            "en": "Senior Full Stack Developer — Data Engineering & AI",
+                            "fr": "Développeur Full Stack Sénior — Data Engineering & IA",
                         },
-                        organization="Orange Côte d'Ivoire",
-                        period={"en": "Current", "fr": "Actuellement"},
+                        organization="Orange Côte d'Ivoire, Abidjan",
+                        period={"en": "Aug 2025 — present", "fr": "Août 2025 — aujourd'hui"},
                         bullets={
                             "en": [
-                                "Developed enterprise web applications and internal business tools",
-                                "Designed and integrated secure REST APIs across payment and business systems",
-                                "Contributed to authentication flows with Keycloak, OAuth2 and JWT",
-                                "Collaborated with cross-functional teams (business, security, infrastructure)",
+                                "Built the data-source observability module: analytical dashboards over high-volume sources for KPI tracking and data quality monitoring",
+                                "Designed the architecture of a commission-calculation platform, removing a recurring manual process",
+                                "Developed autonomous data loading in the back office, ending monthly file exchanges by email",
+                                "Built a full audit-trail module and contributed to secured, containerized production deployments (Docker, CI/CD)",
                             ],
                             "fr": [
-                                "Développement d'applications web d'entreprise et d'outils métier internes",
-                                "Conception et intégration d'APIs REST sécurisées sur des systèmes de paiement et métier",
-                                "Contribution aux flux d'authentification avec Keycloak, OAuth2 et JWT",
-                                "Collaboration avec des équipes pluridisciplinaires (métier, sécurité, infrastructure)",
+                                "Conception du module d'observabilité des sources de données : tableaux de bord analytiques sur des sources à fort volume pour le suivi des KPI et de la qualité des données",
+                                "Architecture d'une plateforme de calcul automatisé des commissions, supprimant un traitement manuel récurrent",
+                                "Développement du chargement autonome des données dans le back-office, mettant fin aux échanges mensuels de fichiers par e-mail",
+                                "Développement du module de piste d'audit et contribution aux mises en production sécurisées et conteneurisées (Docker, CI/CD)",
                             ],
                         },
                         sort_order=1,
                     ),
                     Experience(
                         title={
-                            "en": "Full Stack Developer — Enterprise & freelance projects",
-                            "fr": "Développeur Full Stack — Projets d'entreprise et freelance",
+                            "en": "Senior Full Stack Developer",
+                            "fr": "Développeur Full Stack Sénior",
                         },
-                        organization="Independent",
-                        period={"en": "", "fr": ""},
+                        organization="Markel Technology · clients in Canada, Burundi & Côte d'Ivoire",
+                        period={"en": "2017 — Jul 2025", "fr": "2017 — juillet 2025"},
                         bullets={
                             "en": [
-                                "Delivered full stack web applications from requirements to deployment",
-                                "Designed relational databases and REST APIs with Laravel and FastAPI",
-                                "Managed hosting, deployment and maintenance on Linux servers",
+                                "Designed and architected HOPEFUND, a microfinance banking platform covering 10+ business modules",
+                                "Built GISABO (gisabogroup.ca), a web and mobile international money-transfer platform",
+                                "Delivered INTERHUMAN, a recruitment platform with a published Android application",
+                                "Shipped institutional websites and e-services for organizations in Canada and Burundi",
                             ],
                             "fr": [
-                                "Livraison d'applications web full stack, du besoin au déploiement",
-                                "Conception de bases de données relationnelles et d'APIs REST avec Laravel et FastAPI",
-                                "Gestion de l'hébergement, du déploiement et de la maintenance sur serveurs Linux",
+                                "Conception et architecture de HOPEFUND, plateforme bancaire de microfinance couvrant plus de 10 modules métiers",
+                                "Développement de GISABO (gisabogroup.ca), plateforme web et mobile de transfert d'argent international",
+                                "Livraison d'INTERHUMAN, plateforme de recrutement avec application Android publiée",
+                                "Réalisation de sites institutionnels et e-services pour des organisations au Canada et au Burundi",
                             ],
                         },
                         sort_order=2,
                     ),
                     Experience(
                         title={
-                            "en": "Web & Mobile Application Developer",
-                            "fr": "Développeur d'applications web et mobiles",
+                            "en": "Web Developer",
+                            "fr": "Développeur Web",
                         },
-                        organization="Early career",
-                        period={"en": "", "fr": ""},
+                        organization="Soutra Vision & Ministry of Higher Education (MESRS), Abidjan",
+                        period={"en": "2015 — 2017", "fr": "2015 — 2017"},
                         bullets={
                             "en": [
-                                "Built web and mobile applications for local companies and organizations",
-                                "Developed business modules, forms and reporting features",
-                                "Strengthened fundamentals in PHP, JavaScript, SQL and application architecture",
+                                "Built the national 'Génies de l'Éducation Numérique' competition platform for the MESRS",
+                                "Developed examensbts.net, processing national BTS exam results in Côte d'Ivoire",
+                                "Administered and evolved soutravision.com",
                             ],
                             "fr": [
-                                "Développement d'applications web et mobiles pour des entreprises et organisations locales",
-                                "Développement de modules métier, formulaires et fonctionnalités de reporting",
-                                "Consolidation des fondamentaux en PHP, JavaScript, SQL et architecture applicative",
+                                "Réalisation de la plateforme du concours national des Génies de l'Éducation Numérique pour le MESRS",
+                                "Développement d'examensbts.net pour le traitement des résultats de l'examen BTS en Côte d'Ivoire",
+                                "Administration et évolution du site soutravision.com",
                             ],
                         },
                         sort_order=3,
@@ -558,8 +565,8 @@ def seed() -> None:
                     ValueProp(
                         title={"en": "Adaptable in enterprise environments", "fr": "Adaptable en environnement d'entreprise"},
                         description={
-                            "en": "Years of delivery inside a major telecom operator: real constraints, real users, real production.",
-                            "fr": "Des années de livraison chez un grand opérateur télécom : vraies contraintes, vrais utilisateurs, vraie production.",
+                            "en": "Delivery across telecom, fintech and NGO sectors: real constraints, real users, real production.",
+                            "fr": "Des livraisons dans les télécoms, la fintech et les ONG : vraies contraintes, vrais utilisateurs, vraie production.",
                         },
                         sort_order=5,
                     ),

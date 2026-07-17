@@ -131,7 +131,10 @@ import { fromLines, fromStr, toLines, toStr } from './i18n-form.util';
                 <label>GitHub URL</label>
                 <input formControlName="github_url">
               </div>
-              <div></div>
+              <div class="form-field">
+                <label>Phone</label>
+                <input formControlName="phone">
+              </div>
             </div>
             <div class="i18n-pair">
               <div class="form-field">
@@ -227,6 +230,7 @@ export class SettingsEditorComponent {
     principles_en: [''],
     principles_fr: [''],
     email: [''],
+    phone: [''],
     linkedin_url: [''],
     github_url: [''],
     cv_url_en: [''],
@@ -253,6 +257,7 @@ export class SettingsEditorComponent {
         about_paragraphs_en: toLines(s.about_paragraphs, 'en'), about_paragraphs_fr: toLines(s.about_paragraphs, 'fr'),
         principles_en: toLines(s.principles, 'en'), principles_fr: toLines(s.principles, 'fr'),
         email: s.email,
+        phone: s.phone,
         linkedin_url: s.linkedin_url,
         github_url: s.github_url,
         cv_url_en: toStr(s.cv_url, 'en'), cv_url_fr: toStr(s.cv_url, 'fr'),
@@ -280,6 +285,7 @@ export class SettingsEditorComponent {
       about_paragraphs: fromLines(r.about_paragraphs_en, r.about_paragraphs_fr),
       principles: fromLines(r.principles_en, r.principles_fr),
       email: r.email,
+      phone: r.phone,
       linkedin_url: r.linkedin_url,
       github_url: r.github_url,
       cv_url: fromStr(r.cv_url_en, r.cv_url_fr),

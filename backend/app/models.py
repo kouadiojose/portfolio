@@ -39,6 +39,7 @@ class SiteSettings(Base):
     about_paragraphs: Mapped[dict] = mapped_column(JSON, default=dict)  # i18n list
     principles: Mapped[dict] = mapped_column(JSON, default=dict)      # i18n list — "How I work"
     email: Mapped[str] = mapped_column(String(255), default="")
+    phone: Mapped[str] = mapped_column(String(40), default="")
     linkedin_url: Mapped[str] = mapped_column(String(255), default="")
     github_url: Mapped[str] = mapped_column(String(255), default="")
     cv_url: Mapped[dict] = mapped_column(JSON, default=dict)          # i18n str — per-language CV file

@@ -37,6 +37,7 @@ def _settings_public(s: SiteSettings, lang: str) -> schemas.PublicSettings:
         about_paragraphs=resolve(s.about_paragraphs, lang) or [],
         principles=resolve(s.principles, lang) or [],
         email=s.email,
+        phone=s.phone,
         linkedin_url=s.linkedin_url,
         github_url=s.github_url,
         cv_url=resolve(s.cv_url, lang),
