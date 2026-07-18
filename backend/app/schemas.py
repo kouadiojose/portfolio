@@ -201,6 +201,42 @@ class ValuePropOut(ValuePropBase):
     id: int
 
 
+# ---------- Admin dashboard ----------
+
+class MessageStats(BaseModel):
+    total: int
+    unread: int
+    french: int
+    english: int
+
+
+class ProjectStats(BaseModel):
+    total: int
+    visible: int
+
+
+class TranslationGaps(BaseModel):
+    settings: int
+    projects: int
+    experiences: int
+    values: int
+    stack: int
+
+    @property
+    def total(self) -> int:  # convenience for the API consumer
+        return self.settings + self.projects + self.experiences + self.values + self.stack
+
+
+class AdminStats(BaseModel):
+    messages: MessageStats
+    projects: ProjectStats
+    experiences: int
+    stack_items: int
+    values: int
+    translation_gaps: TranslationGaps
+    latest_messages: list["ContactMessageOut"]
+
+
 # ---------- Contact ----------
 
 class ContactCreate(BaseModel):

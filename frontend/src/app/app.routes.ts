@@ -18,7 +18,12 @@ export const routes: Routes = [
       import('./pages/admin/admin-layout.component').then((m) => m.AdminLayoutComponent),
     title: 'Admin — Yeo Yedjande',
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'messages' },
+      { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./pages/admin/dashboard.component').then((m) => m.DashboardComponent),
+      },
       {
         path: 'messages',
         loadComponent: () => import('./pages/admin/messages.component').then((m) => m.MessagesComponent),

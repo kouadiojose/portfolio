@@ -206,3 +206,20 @@ def test_change_email_flow(client, auth_headers):
         headers=new_headers,
     )
     assert restored.status_code == 200
+
+
+def test_admin_stats(client, auth_headers):
+    assert client.get("/api/admin/stats").status_code == 401
+
+    response = client.get("/api/admin/stats", headers=auth_headers)
+    assert response.status_code == 200
+    stats = response.json()
+    assert stats["projects"]["total"] == 5
+    assert stats["projects"]["visible"] == 5
+    assert stats["experiences"] == 3
+    assert stats["messages"]["total"] >= 1
+    assert stats["messages"]["french"] >= 1
+    # Seed content is fully bilingual — no translation gaps expected
+    gaps = stats["translation_gaps"]
+    assert all(gaps[key] == 0 for key in ("settings", "projects", "experiences", "values", "stack"))
+    assert len(stats["latest_messages"]) >= 1

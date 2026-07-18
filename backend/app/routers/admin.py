@@ -182,3 +182,73 @@ def admin_mark_read(item_id: int, db: Session = Depends(get_db)):
 @router.delete("/messages/{item_id}", status_code=status.HTTP_204_NO_CONTENT)
 def admin_delete_message(item_id: int, db: Session = Depends(get_db)):
     _delete(db, ContactMessage, item_id)
+
+
+# ---------- Dashboard stats ----------
+
+def _count_missing_fr(values: list) -> int:
+    """Count i18n dicts (or lists) with content in English but none in French."""
+    missing = 0
+    for value in values:
+        if not isinstance(value, dict):
+            continue
+        en, fr = value.get("en"), value.get("fr")
+        if en and not fr:
+            missing += 1
+    return missing
+
+
+@router.get("/stats", response_model=schemas.AdminStats)
+def admin_stats(db: Session = Depends(get_db)):
+    from .public import get_site_settings
+
+    messages = db.query(ContactMessage).all()
+    projects = db.query(Project).all()
+    experiences = db.query(Experience).all()
+    values = db.query(ValueProp).all()
+    stack = db.query(StackItem).all()
+    site = get_site_settings(db)
+
+    settings_fields = [
+        site.headline, site.tagline, site.hero_subtitle, site.availability,
+        site.impacts, site.about_title, site.about_paragraphs, site.principles,
+        site.cv_url, site.contact_lead,
+    ]
+    project_fields = [
+        field
+        for p in projects
+        for field in (p.title, p.role, p.summary, p.highlights,
+                      p.context, p.problem, p.approach, p.contributions, p.learnings)
+    ]
+    experience_fields = [
+        field for e in experiences for field in (e.title, e.organization, e.period, e.bullets)
+    ]
+    value_fields = [field for v in values for field in (v.title, v.description)]
+    stack_fields = [i.category for i in stack]
+
+    return schemas.AdminStats(
+        messages=schemas.MessageStats(
+            total=len(messages),
+            unread=sum(1 for m in messages if not m.read),
+            french=sum(1 for m in messages if m.language == "fr"),
+            english=sum(1 for m in messages if m.language == "en"),
+        ),
+        projects=schemas.ProjectStats(
+            total=len(projects),
+            visible=sum(1 for p in projects if p.featured),
+        ),
+        experiences=len(experiences),
+        stack_items=len(stack),
+        values=len(values),
+        translation_gaps=schemas.TranslationGaps(
+            settings=_count_missing_fr(settings_fields),
+            projects=_count_missing_fr(project_fields),
+            experiences=_count_missing_fr(experience_fields),
+            values=_count_missing_fr(value_fields),
+            stack=_count_missing_fr(stack_fields),
+        ),
+        latest_messages=[
+            schemas.ContactMessageOut.model_validate(m)
+            for m in sorted(messages, key=lambda m: m.created_at, reverse=True)[:3]
+        ],
+    )
