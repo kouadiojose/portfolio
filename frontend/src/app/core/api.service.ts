@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { Observable, shareReplay, switchMap } from 'rxjs';
+import { Observable, map, shareReplay, switchMap } from 'rxjs';
 
 import { LanguageService } from './language.service';
 import { ContactPayload, PortfolioContent, Project } from './models';
@@ -39,10 +39,17 @@ export class ApiService {
     });
   }
 
-  sendMessage(payload: ContactPayload): Observable<{ detail: string }> {
+  getContactChallenge(): Observable<string> {
+    return this.http
+      .get<{ token: string }>('/api/contact/challenge')
+      .pipe(map((res) => res.token));
+  }
+
+  sendMessage(payload: ContactPayload, challenge: string): Observable<{ detail: string }> {
     return this.http.post<{ detail: string }>('/api/contact', {
       ...payload,
       language: this.language.lang(),
+      challenge,
     });
   }
 }

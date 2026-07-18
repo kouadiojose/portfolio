@@ -63,7 +63,8 @@
       "error": "Something went wrong. Please retry or email me directly.",
       "nameError": "Please enter your name.",
       "emailError": "Please enter a valid email address.",
-      "messageError": "Please write a short message (at least 10 characters)."
+      "messageError": "Please write a short message (at least 10 characters).",
+      "rateLimited": "Too many messages sent — please try again in a while."
     }
   },
   "footer": {

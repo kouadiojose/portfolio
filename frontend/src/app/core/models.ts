@@ -75,6 +75,7 @@ export interface ContactPayload {
   email: string;
   subject: string;
   body: string;
+  website: string; // honeypot — always empty for humans
 }
 
 export interface ContactMessage {

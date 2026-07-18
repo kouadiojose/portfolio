@@ -245,6 +245,8 @@ class ContactCreate(BaseModel):
     subject: str = Field(default="", max_length=255)
     body: str = Field(min_length=10, max_length=5000)
     language: Literal["en", "fr"] = "en"
+    challenge: str = ""      # signed time-trap token from /api/contact/challenge
+    website: str = ""        # honeypot — humans never see this field
 
 
 class ContactMessageOut(BaseModel):

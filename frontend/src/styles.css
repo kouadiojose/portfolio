@@ -672,6 +672,9 @@ button { font-family: var(--font); }
 
 .field-error { color: var(--danger); font-size: 12.5px; }
 
+/* Honeypot — visually removed, still in the DOM for bots */
+.hp-field { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; opacity: 0; }
+
 .alert { padding: 12px 16px; border-radius: var(--radius-sm); font-size: 14px; }
 .alert-success { background: rgba(18, 183, 106, 0.09); color: #067647; border: 1px solid rgba(18, 183, 106, 0.3); }
 .alert-error { background: rgba(224, 69, 63, 0.07); color: var(--danger); border: 1px solid rgba(224, 69, 63, 0.3); }

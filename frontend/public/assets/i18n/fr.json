@@ -63,7 +63,8 @@
       "error": "Une erreur est survenue. Réessayez ou écrivez-moi directement par email.",
       "nameError": "Veuillez saisir votre nom.",
       "emailError": "Veuillez saisir une adresse email valide.",
-      "messageError": "Veuillez écrire un court message (au moins 10 caractères)."
+      "messageError": "Veuillez écrire un court message (au moins 10 caractères).",
+      "rateLimited": "Trop de messages envoyés — merci de réessayer dans un moment."
     }
   },
   "footer": {

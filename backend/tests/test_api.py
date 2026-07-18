@@ -11,6 +11,9 @@ os.environ["DATABASE_URL"] = "sqlite:///./test_portfolio.db"
 os.environ["ADMIN_EMAIL"] = "admin@example.com"
 os.environ["ADMIN_PASSWORD"] = "test-password"
 
+import time
+
+import jwt as pyjwt
 import pytest
 from fastapi.testclient import TestClient
 
@@ -30,6 +33,15 @@ def prepared_database():
 @pytest.fixture(scope="session")
 def client():
     return TestClient(app)
+
+
+def make_challenge(age_seconds: int = 10) -> str:
+    """Craft a contact-form challenge token with a controlled age."""
+    return pyjwt.encode(
+        {"purpose": "contact", "iat": int(time.time()) - age_seconds},
+        "change-me-in-production",
+        algorithm="HS256",
+    )
 
 
 @pytest.fixture(scope="session")
@@ -106,7 +118,9 @@ def test_contact_message_flow_stores_language(client, auth_headers):
             "subject": "Senior role",
             "body": "Bonjour, j'aimerais échanger au sujet d'une opportunité.",
             "language": "fr",
+            "challenge": make_challenge(),
         },
+        headers={"X-Forwarded-For": "203.0.113.10"},
     )
     assert response.status_code == 201
 
@@ -223,3 +237,57 @@ def test_admin_stats(client, auth_headers):
     gaps = stats["translation_gaps"]
     assert all(gaps[key] == 0 for key in ("settings", "projects", "experiences", "values", "stack"))
     assert len(stats["latest_messages"]) >= 1
+
+
+def test_contact_antispam_layers(client, auth_headers):
+    base = {
+        "name": "Legit Sender",
+        "email": "legit@example.org",
+        "subject": "Hello",
+        "body": "A perfectly normal message for you.",
+    }
+    ip = {"X-Forwarded-For": "203.0.113.20"}
+    inbox_before = len(client.get("/api/admin/messages", headers=auth_headers).json())
+
+    # Challenge endpoint issues a token
+    assert "token" in client.get("/api/contact/challenge").json()
+
+    # Honeypot filled: fake success, nothing stored
+    r = client.post("/api/contact", json={**base, "challenge": make_challenge(), "website": "spam.biz"}, headers=ip)
+    assert r.status_code == 201
+    assert len(client.get("/api/admin/messages", headers=auth_headers).json()) == inbox_before
+
+    # Missing or forged challenge rejected
+    assert client.post("/api/contact", json=base, headers=ip).status_code == 400
+    assert client.post("/api/contact", json={**base, "challenge": "forged"}, headers=ip).status_code == 400
+
+    # Too-fast submission rejected
+    r = client.post("/api/contact", json={**base, "challenge": make_challenge(age_seconds=0)}, headers=ip)
+    assert r.status_code == 400 and "quickly" in r.json()["detail"]
+
+    # Expired token rejected
+    assert client.post(
+        "/api/contact", json={**base, "challenge": make_challenge(age_seconds=3 * 3600)}, headers=ip
+    ).status_code == 400
+
+    # Link-stuffed body rejected
+    spam_body = "buy now https://a.io https://b.io https://c.io https://d.io"
+    assert client.post(
+        "/api/contact", json={**base, "body": spam_body, "challenge": make_challenge()}, headers=ip
+    ).status_code == 422
+
+
+def test_contact_rate_limit(client):
+    base = {
+        "name": "Frequent Sender",
+        "email": "frequent@example.org",
+        "subject": "",
+        "body": "Message number N in a burst of submissions.",
+    }
+    ip = {"X-Forwarded-For": "203.0.113.99"}
+    for _ in range(5):
+        assert client.post(
+            "/api/contact", json={**base, "challenge": make_challenge()}, headers=ip
+        ).status_code == 201
+    r = client.post("/api/contact", json={**base, "challenge": make_challenge()}, headers=ip)
+    assert r.status_code == 429

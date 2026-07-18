@@ -73,6 +73,10 @@ import { LanguageService } from '../../core/language.service';
                     }
                   </div>
                 </div>
+                <div class="hp-field" aria-hidden="true">
+                  <label for="website">Website</label>
+                  <input id="website" type="text" formControlName="website" tabindex="-1" autocomplete="off">
+                </div>
                 <div class="form-field">
                   <label for="subject">{{ 'contact.form.subject' | transloco }}</label>
                   <input id="subject" type="text" formControlName="subject"
@@ -88,7 +92,7 @@ import { LanguageService } from '../../core/language.service';
                 </div>
 
                 @if (error()) {
-                  <div class="alert alert-error" role="alert">{{ 'contact.form.error' | transloco }}</div>
+                  <div class="alert alert-error" role="alert">{{ error() | transloco }}</div>
                 }
 
                 <div>
@@ -111,17 +115,24 @@ export class ContactComponent {
 
   sending = signal(false);
   sent = signal(false);
-  error = signal(false);
+  error = signal('');
+  private challenge = signal('');
 
   form = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
     email: ['', [Validators.required, Validators.email]],
     subject: [''],
     body: ['', [Validators.required, Validators.minLength(10)]],
+    website: [''], // honeypot — stays empty for humans
   });
 
   constructor() {
     this.language.setPageMeta('meta.contactTitle', 'meta.homeDescription');
+    this.fetchChallenge();
+  }
+
+  private fetchChallenge(): void {
+    this.api.getContactChallenge().subscribe((token) => this.challenge.set(token));
   }
 
   invalid(field: string): boolean {
@@ -135,12 +146,13 @@ export class ContactComponent {
       return;
     }
     this.sending.set(true);
-    this.error.set(false);
-    this.api.sendMessage(this.form.getRawValue()).subscribe({
+    this.error.set('');
+    this.api.sendMessage(this.form.getRawValue(), this.challenge()).subscribe({
       next: () => this.sent.set(true),
-      error: () => {
+      error: (err) => {
         this.sending.set(false);
-        this.error.set(true);
+        this.error.set(err.status === 429 ? 'contact.form.rateLimited' : 'contact.form.error');
+        this.fetchChallenge(); // a fresh token for the retry
       },
     });
   }

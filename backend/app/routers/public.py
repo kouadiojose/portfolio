@@ -1,7 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from sqlalchemy.orm import Session
 
 from .. import schemas
+from ..antispam import (
+    client_ip,
+    enforce_rate_limit,
+    issue_challenge,
+    looks_like_spam,
+    verify_challenge,
+)
 from ..database import get_db
 from ..i18n import normalize_lang, resolve
 from ..models import (
@@ -120,8 +127,24 @@ def get_project(slug: str, lang: str = Query("en"), db: Session = Depends(get_db
     return _project_public(project, normalize_lang(lang))
 
 
+@router.get("/contact/challenge")
+def contact_challenge():
+    """Issued when the contact form loads; proves a human-plausible dwell time."""
+    return {"token": issue_challenge()}
+
+
 @router.post("/contact", status_code=status.HTTP_201_CREATED)
-def send_message(payload: schemas.ContactCreate, db: Session = Depends(get_db)):
+def send_message(payload: schemas.ContactCreate, request: Request, db: Session = Depends(get_db)):
+    # Honeypot: bots fill the hidden field — pretend success, store nothing.
+    if payload.website:
+        return {"detail": "Message received."}
+
+    verify_challenge(payload.challenge)
+    enforce_rate_limit(client_ip(request))
+
+    if looks_like_spam(payload.body):
+        raise HTTPException(status_code=422, detail="Message rejected: too many links.")
+
     message = ContactMessage(
         name=payload.name.strip(),
         email=payload.email,
