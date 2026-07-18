@@ -5,15 +5,22 @@ Creates the schema, the initial admin account and the initial bilingual
 overwritten, so edits made through the admin dashboard survive restarts and
 redeployments.
 
+When the schema is out of date and the automatic reset runs, the admin
+account (credentials changed through the UI) and the contact-message inbox
+are preserved across the reset.
+
 Run with:  python -m app.seed
 Reset with (drops ALL data): python -m app.reset
 """
-from sqlalchemy import inspect
+from datetime import datetime
+
+from sqlalchemy import JSON, inspect, text
 
 from .config import get_settings
 from .database import Base, SessionLocal, engine
 from .models import (
     AdminUser,
+    ContactMessage,
     Experience,
     Project,
     SiteSettings,
@@ -24,31 +31,96 @@ from .security import hash_password
 
 
 def schema_matches() -> bool:
-    """True when every model column exists in the database.
+    """True when the database matches the models.
 
-    Detects pre-launch schema changes (missing columns/tables). Type changes
-    on same-named columns are not detected — use `python -m app.reset` then.
+    Detects missing tables/columns AND columns whose model type is JSON but
+    whose database type is not (e.g. a text column migrated to i18n JSON).
     """
     inspector = inspect(engine)
     for table in Base.metadata.sorted_tables:
         if not inspector.has_table(table.name):
             continue  # create_all will create it
-        existing = {column["name"] for column in inspector.get_columns(table.name)}
-        expected = {column.name for column in table.columns}
-        if not expected.issubset(existing):
-            return False
+        existing = {column["name"]: column for column in inspector.get_columns(table.name)}
+        for column in table.columns:
+            if column.name not in existing:
+                return False
+            model_is_json = isinstance(column.type, JSON)
+            db_is_json = "JSON" in str(existing[column.name]["type"]).upper()
+            if model_is_json and not db_is_json:
+                return False
     return True
+
+
+def _snapshot_preserved_data() -> dict:
+    """Best-effort snapshot of the admin account and inbox before a reset.
+
+    Uses raw SQL so it works against an outdated schema; anything that cannot
+    be read is simply skipped.
+    """
+    preserved = {"admins": [], "messages": []}
+    inspector = inspect(engine)
+    with engine.connect() as conn:
+        if inspector.has_table("admin_users"):
+            try:
+                rows = conn.execute(
+                    text("SELECT email, hashed_password FROM admin_users")
+                ).fetchall()
+                preserved["admins"] = [dict(row._mapping) for row in rows]
+            except Exception:
+                pass
+        if inspector.has_table("contact_messages"):
+            for query in (
+                "SELECT name, email, subject, body, language, created_at, read FROM contact_messages",
+                "SELECT name, email, subject, body, created_at, read FROM contact_messages",
+            ):
+                try:
+                    rows = conn.execute(text(query)).fetchall()
+                    preserved["messages"] = [dict(row._mapping) for row in rows]
+                    break
+                except Exception:
+                    continue
+    return preserved
+
+
+def _restore_preserved_data(db, preserved: dict) -> None:
+    if preserved["admins"]:
+        db.query(AdminUser).delete()
+        for admin in preserved["admins"]:
+            db.add(AdminUser(email=admin["email"], hashed_password=admin["hashed_password"]))
+        print(f"Preserved {len(preserved['admins'])} admin account(s) across the reset.")
+    if preserved["messages"]:
+        for message in preserved["messages"]:
+            created_at = message.get("created_at")
+            if isinstance(created_at, str):
+                created_at = datetime.fromisoformat(created_at)
+            db.add(
+                ContactMessage(
+                    name=message["name"],
+                    email=message["email"],
+                    subject=message.get("subject") or "",
+                    body=message["body"],
+                    language=message.get("language") or "en",
+                    created_at=created_at,
+                    read=bool(message.get("read")),
+                )
+            )
+        print(f"Preserved {len(preserved['messages'])} contact message(s) across the reset.")
+    # Make restored rows visible to the existence checks below (autoflush is off)
+    db.flush()
 
 
 def seed() -> None:
     settings = get_settings()
+    preserved = {"admins": [], "messages": []}
 
     if not schema_matches():
         if settings.reset_on_schema_mismatch:
             print(
                 "WARNING: database schema is out of date — dropping all tables "
-                "and re-seeding (disable with RESET_ON_SCHEMA_MISMATCH=false)."
+                "and re-seeding (disable with RESET_ON_SCHEMA_MISMATCH=false). "
+                "Admin account and contact messages will be preserved."
             )
+            preserved = _snapshot_preserved_data()
             Base.metadata.drop_all(bind=engine)
         else:
             print(
@@ -60,6 +132,8 @@ def seed() -> None:
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:
+        _restore_preserved_data(db, preserved)
+
         if not db.query(AdminUser).first():
             db.add(
                 AdminUser(
