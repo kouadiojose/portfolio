@@ -9,12 +9,16 @@
   <meta name="description" content="Senior Full Stack Developer building secure, scalable and business-oriented web platforms with Angular, Python/FastAPI, Laravel, PostgreSQL, Docker and Keycloak. Available for international opportunities.">
   <meta name="author" content="Yeo Yedjande">
   <link rel="canonical" href="https://yeoyedjande.com/">
+  <link rel="alternate" hreflang="en" href="https://yeoyedjande.com/en">
+  <link rel="alternate" hreflang="fr" href="https://yeoyedjande.com/fr">
+  <link rel="alternate" hreflang="x-default" href="https://yeoyedjande.com/en">
 
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://yeoyedjande.com/">
   <meta property="og:title" content="Yeo Yedjande — Senior Full Stack Developer">
   <meta property="og:description" content="Building secure, scalable and business-oriented web platforms with Angular, Python/FastAPI, Laravel, PostgreSQL, Docker and Keycloak.">
   <meta property="og:locale" content="en_US">
+  <meta property="og:locale:alternate" content="fr_FR">
   <meta name="twitter:card" content="summary">
 
   <script type="application/ld+json">
@@ -34,8 +38,34 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <style>
+    /* Critical boot styles — prevent the white flash before Angular loads */
+    html { background: #f7f8fd; }
+    body { margin: 0; background: #f7f8fd; }
+    .boot-screen {
+      position: fixed; inset: 0; display: grid; place-items: center;
+      background: #f7f8fd;
+    }
+    .boot-mark {
+      width: 52px; height: 52px; border-radius: 14px;
+      display: grid; place-items: center;
+      background: linear-gradient(100deg, #4f6bf5, #8b5cf6, #22c7e6);
+      color: #fff; font: 800 18px/1 Inter, system-ui, sans-serif;
+      box-shadow: 0 10px 34px -8px rgba(84, 87, 240, 0.5);
+      animation: boot-pulse 1.2s ease-in-out infinite;
+    }
+    @keyframes boot-pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(0.94); opacity: 0.75; }
+    }
+    @media (prefers-reduced-motion: reduce) { .boot-mark { animation: none; } }
+  </style>
 </head>
 <body>
-  <app-root></app-root>
+  <app-root>
+    <div class="boot-screen" aria-label="Loading">
+      <div class="boot-mark">YY</div>
+    </div>
+  </app-root>
 </body>
 </html>

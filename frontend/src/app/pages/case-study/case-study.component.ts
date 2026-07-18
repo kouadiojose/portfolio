@@ -1,17 +1,17 @@
 import { Component, effect, inject, input, signal } from '@angular/core';
-import { Title } from '@angular/platform-browser';
+import { Meta, Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 
 import { ApiService } from '../../core/api.service';
 import { LanguageService } from '../../core/language.service';
 import { Project } from '../../core/models';
-import { ProjectVisualComponent } from '../../shared/project-visual.component';
+import { CaseMockComponent } from '../../shared/case-mock.component';
 import { RevealDirective } from '../../shared/reveal.directive';
 
 @Component({
   selector: 'app-case-study',
-  imports: [RouterLink, TranslocoPipe, ProjectVisualComponent, RevealDirective],
+  imports: [RouterLink, TranslocoPipe, CaseMockComponent, RevealDirective],
   template: `
     @if (project(); as p) {
       <section class="cs-hero">
@@ -31,6 +31,8 @@ import { RevealDirective } from '../../shared/reveal.directive';
 
       <section class="cs-body">
         <div class="container">
+          <app-case-mock [kind]="p.visual" [url]="mockUrl(p)" [caption]="p.title" />
+
           <div class="cs-grid">
             <div class="cs-block" appReveal>
               <h2>{{ 'caseStudy.context' | transloco }}</h2>
@@ -54,12 +56,15 @@ import { RevealDirective } from '../../shared/reveal.directive';
                 }
               </ul>
             </div>
-            <div class="cs-block" appReveal style="display: grid; gap: 18px;">
-              <div>
-                <h2>{{ 'caseStudy.role' | transloco }}</h2>
-                <p>{{ p.role }}</p>
+            <div class="cs-block" appReveal>
+              <h2>{{ 'caseStudy.role' | transloco }}</h2>
+              <p>{{ p.role }}</p>
+              <h2 style="margin-top: 18px;">{{ 'caseStudy.technologies' | transloco }}</h2>
+              <div class="chip-row" style="margin-top: 0;">
+                @for (tag of p.tags; track tag) {
+                  <span class="chip">{{ tag }}</span>
+                }
               </div>
-              <app-project-visual [kind]="p.visual" />
             </div>
 
             <div class="cs-block cs-block-wide cs-learnings" appReveal>
@@ -94,9 +99,21 @@ export class CaseStudyComponent {
   language = inject(LanguageService);
   private api = inject(ApiService);
   private title = inject(Title);
+  private meta = inject(Meta);
 
   project = signal<Project | null>(null);
   notFound = signal(false);
+
+  /** Plausible, honest address bar per project (public URLs when they exist). */
+  mockUrl(p: Project): string {
+    const urls: Record<string, string> = {
+      'gisabo-money-transfer': 'gisabogroup.ca — production',
+      'hopefund-microfinance-platform': 'hopefund — core banking',
+      'observability-monitoring-platform': 'observability — internal',
+      'odoo-business-process-automation': 'api console — integration',
+    };
+    return urls[p.slug] ?? 'app.internal — production';
+  }
 
   constructor() {
     // Reload when the slug or the language changes (no page refresh)
@@ -112,7 +129,11 @@ export class CaseStudyComponent {
     this.api.getProject(slug).subscribe({
       next: (project) => {
         this.project.set(project);
-        this.title.setTitle(`${project.title} — Yeo Yedjande`);
+        const pageTitle = `${project.title} — Yeo Yedjande`;
+        this.title.setTitle(pageTitle);
+        this.meta.updateTag({ property: 'og:title', content: pageTitle });
+        this.meta.updateTag({ name: 'description', content: project.summary });
+        this.meta.updateTag({ property: 'og:description', content: project.summary });
       },
       error: () => {
         this.project.set(null);

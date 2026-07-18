@@ -54,7 +54,7 @@ def test_public_content_english_default(client):
     assert data["settings"]["headline"] == "Senior Full Stack Developer"
     assert len(data["projects"]) == 5
     assert data["stack"], "stack should be seeded"
-    assert data["settings"]["cv_url"] == "/assets/cv/CV_EN.pdf"
+    assert data["settings"]["cv_url"] == ""  # CV download toggled off
 
 
 def test_public_content_french(client):
@@ -62,7 +62,7 @@ def test_public_content_french(client):
     assert response.status_code == 200
     data = response.json()
     assert data["settings"]["headline"] == "Développeur Full Stack Senior"
-    assert data["settings"]["cv_url"] == "/assets/cv/CV_FR.pdf"
+    assert data["settings"]["cv_url"] == ""  # CV download toggled off
     assert data["projects"][0]["title"] == "Plateforme de paiement d'entreprise"
 
 

@@ -142,6 +142,17 @@ def seed() -> None:
                 )
             )
 
+        # One-time normalization: the "Download CV" feature is toggled off by
+        # emptying cv_url. Only overwrite the untouched seed defaults so a
+        # custom path set in the admin is respected.
+        existing_settings = db.query(SiteSettings).first()
+        if existing_settings and existing_settings.cv_url == {
+            "en": "/assets/cv/CV_EN.pdf",
+            "fr": "/assets/cv/CV_FR.pdf",
+        }:
+            existing_settings.cv_url = {"en": "", "fr": ""}
+            print("Cleared default CV paths — Download CV buttons hidden.")
+
         if not db.query(SiteSettings).first():
             db.add(
                 SiteSettings(
@@ -208,10 +219,9 @@ def seed() -> None:
                     phone="+225 07 475 504 17",
                     linkedin_url="https://www.linkedin.com/in/yeoyedjande/",
                     github_url="https://github.com/yeoyedjande",
-                    cv_url={
-                        "en": "/assets/cv/CV_EN.pdf",
-                        "fr": "/assets/cv/CV_FR.pdf",
-                    },
+                    # Empty = the "Download CV" buttons are hidden site-wide.
+                    # Set paths (e.g. /assets/cv/CV_EN.pdf) in the admin to re-enable.
+                    cv_url={"en": "", "fr": ""},
                     contact_lead={
                         "en": "I'm open to senior full stack roles, remote opportunities and relocation in Canada, France, Belgium, Luxembourg, Switzerland and Germany.",
                         "fr": "Je suis ouvert aux postes full stack senior, aux opportunités en télétravail et à la relocalisation au Canada, en France, en Belgique, au Luxembourg, en Suisse et en Allemagne.",

@@ -15,8 +15,10 @@
         <div class="hero-actions">
           <a class="btn btn-primary" [routerLink]="['/', language.lang()]" fragment="work">
             {{ 'hero.viewWork' | transloco }}</a>
-          <a class="btn btn-outline" [href]="content.settings.cv_url" download>
-            {{ 'hero.downloadCv' | transloco }}</a>
+          @if (content.settings.cv_url) {
+            <a class="btn btn-outline" [href]="content.settings.cv_url" download>
+              {{ 'hero.downloadCv' | transloco }}</a>
+          }
           <a class="btn btn-quiet" [routerLink]="['/', language.lang(), 'contact']">
             {{ 'hero.contactMe' | transloco }} →</a>
         </div>
@@ -168,7 +170,7 @@
             <div class="timeline-content">
               <h3>{{ experience.title }}</h3>
               <ul>
-                @for (bullet of experience.bullets; track $index) {
+                @for (bullet of experience.bullets.slice(0, 3); track $index) {
                   <li>{{ bullet }}</li>
                 }
               </ul>
@@ -212,7 +214,9 @@
               {{ 'hero.contactMe' | transloco }}</a>
             <a class="btn btn-outline" [href]="content.settings.linkedin_url" target="_blank" rel="noopener">LinkedIn</a>
             <a class="btn btn-outline" [href]="content.settings.github_url" target="_blank" rel="noopener">GitHub</a>
-            <a class="btn btn-quiet" [href]="content.settings.cv_url" download>{{ 'hero.downloadCv' | transloco }}</a>
+            @if (content.settings.cv_url) {
+              <a class="btn btn-quiet" [href]="content.settings.cv_url" download>{{ 'hero.downloadCv' | transloco }}</a>
+            }
           </div>
         </div>
       </div>
