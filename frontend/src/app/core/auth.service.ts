@@ -36,4 +36,16 @@ export class AuthService {
   changePassword(current_password: string, new_password: string) {
     return this.http.post<void>('/api/auth/change-password', { current_password, new_password });
   }
+
+  me() {
+    return this.http.get<{ id: number; email: string }>('/api/auth/me');
+  }
+
+  /** Change the login email. The API returns a fresh JWT (the token subject
+   *  is the email), which replaces the stored one — no re-login needed. */
+  changeEmail(password: string, new_email: string) {
+    return this.http
+      .post<{ access_token: string }>('/api/auth/change-email', { password, new_email })
+      .pipe(tap((res) => localStorage.setItem(TOKEN_KEY, res.access_token)));
+  }
 }

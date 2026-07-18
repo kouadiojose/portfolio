@@ -32,6 +32,11 @@ class PasswordChange(BaseModel):
     new_password: str = Field(min_length=8)
 
 
+class EmailChange(BaseModel):
+    password: str
+    new_email: EmailStr
+
+
 # ---------- Public (language-resolved) schemas ----------
 
 class PublicSettings(BaseModel):

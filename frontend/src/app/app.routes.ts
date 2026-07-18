@@ -24,6 +24,11 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/admin/messages.component').then((m) => m.MessagesComponent),
       },
       {
+        path: 'account',
+        loadComponent: () =>
+          import('./pages/admin/account.component').then((m) => m.AccountComponent),
+      },
+      {
         path: 'settings',
         loadComponent: () =>
           import('./pages/admin/settings-editor.component').then((m) => m.SettingsEditorComponent),

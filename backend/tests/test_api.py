@@ -173,3 +173,36 @@ def test_settings_update_partial(client, auth_headers):
     assert response.json()["availability"]["fr"] == "Disponibilité de test"
     # Other fields untouched
     assert response.json()["headline"]["en"] == "Senior Full Stack Developer"
+
+
+def test_change_email_flow(client, auth_headers):
+    # Wrong password is rejected
+    denied = client.post(
+        "/api/auth/change-email",
+        json={"password": "wrong", "new_email": "new-admin@example.com"},
+        headers=auth_headers,
+    )
+    assert denied.status_code == 400
+
+    # Valid change returns a fresh token bound to the new email
+    changed = client.post(
+        "/api/auth/change-email",
+        json={"password": "test-password", "new_email": "new-admin@example.com"},
+        headers=auth_headers,
+    )
+    assert changed.status_code == 200
+    new_token = changed.json()["access_token"]
+    new_headers = {"Authorization": f"Bearer {new_token}"}
+
+    # Old token is now invalid; new token works
+    assert client.get("/api/auth/me", headers=auth_headers).status_code == 401
+    me = client.get("/api/auth/me", headers=new_headers)
+    assert me.status_code == 200 and me.json()["email"] == "new-admin@example.com"
+
+    # Restore the original email so other fixtures stay valid
+    restored = client.post(
+        "/api/auth/change-email",
+        json={"password": "test-password", "new_email": "admin@example.com"},
+        headers=new_headers,
+    )
+    assert restored.status_code == 200

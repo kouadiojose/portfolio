@@ -2,7 +2,6 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { AdminApiService } from '../../core/admin-api.service';
-import { AuthService } from '../../core/auth.service';
 import { AdminSiteSettings } from '../../core/models';
 import { fromLines, fromStr, toLines, toStr } from './i18n-form.util';
 
@@ -171,45 +170,19 @@ import { fromLines, fromStr, toLines, toStr } from './i18n-form.util';
         </button>
       </form>
 
-      <div class="admin-panel" style="margin-top: 32px;">
-        <h2>Change password</h2>
-        <form class="form" [formGroup]="passwordForm" (ngSubmit)="changePassword()">
-          <div class="form-row">
-            <div class="form-field">
-              <label>Current password</label>
-              <input type="password" formControlName="current_password" autocomplete="current-password">
-            </div>
-            <div class="form-field">
-              <label>New password <span class="hint">(min. 8 characters)</span></label>
-              <input type="password" formControlName="new_password" autocomplete="new-password">
-            </div>
-          </div>
-          @if (passwordMessage()) {
-            <div class="alert" [class.alert-success]="passwordOk()" [class.alert-error]="!passwordOk()">
-              {{ passwordMessage() }}
-            </div>
-          }
-          <div>
-            <button class="btn btn-outline" type="submit" [disabled]="passwordForm.invalid">Update password</button>
-          </div>
-        </form>
-      </div>
-    } @else {
+      } @else {
       <div class="loading-state"><div class="spinner"></div></div>
     }
   `,
 })
 export class SettingsEditorComponent {
   private api = inject(AdminApiService);
-  private auth = inject(AuthService);
   private fb = inject(FormBuilder);
 
   loaded = signal(false);
   saving = signal(false);
   saved = signal(false);
   error = signal(false);
-  passwordMessage = signal('');
-  passwordOk = signal(false);
 
   form = this.fb.nonNullable.group({
     full_name: ['', Validators.required],
@@ -239,10 +212,6 @@ export class SettingsEditorComponent {
     contact_lead_fr: [''],
   });
 
-  passwordForm = this.fb.nonNullable.group({
-    current_password: ['', Validators.required],
-    new_password: ['', [Validators.required, Validators.minLength(8)]],
-  });
 
   constructor() {
     this.api.getSettings().subscribe((s) => {
@@ -304,20 +273,4 @@ export class SettingsEditorComponent {
     });
   }
 
-  changePassword(): void {
-    const { current_password, new_password } = this.passwordForm.getRawValue();
-    this.auth.changePassword(current_password, new_password).subscribe({
-      next: () => {
-        this.passwordOk.set(true);
-        this.passwordMessage.set('Password updated.');
-        this.passwordForm.reset();
-      },
-      error: (err) => {
-        this.passwordOk.set(false);
-        this.passwordMessage.set(
-          err.status === 400 ? 'Current password is incorrect.' : 'Password update failed.'
-        );
-      },
-    });
-  }
 }

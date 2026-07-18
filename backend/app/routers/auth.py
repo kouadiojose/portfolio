@@ -43,3 +43,29 @@ def change_password(
         )
     current.hashed_password = hash_password(payload.new_password)
     db.commit()
+
+
+@router.post("/change-email", response_model=schemas.TokenResponse)
+def change_email(
+    payload: schemas.EmailChange,
+    current: AdminUser = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+):
+    """Change the login email. The JWT subject is the email, so the current
+    token becomes invalid — a fresh token is returned in the same response."""
+    if not verify_password(payload.password, current.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Password is incorrect",
+        )
+    existing = db.query(AdminUser).filter(
+        AdminUser.email == payload.new_email, AdminUser.id != current.id
+    ).first()
+    if existing:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="This email is already in use",
+        )
+    current.email = payload.new_email
+    db.commit()
+    return schemas.TokenResponse(access_token=create_access_token(payload.new_email))
