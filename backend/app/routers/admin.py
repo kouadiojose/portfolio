@@ -7,6 +7,7 @@ from ..database import get_db
 from ..models import (
     ContactMessage,
     Experience,
+    PageView,
     Project,
     StackItem,
     ValueProp,
@@ -198,6 +199,66 @@ def _count_missing_fr(values: list) -> int:
     return missing
 
 
+def _visit_stats(db: Session) -> schemas.VisitStats:
+    from datetime import datetime, timedelta, timezone
+
+    from sqlalchemy import func
+
+    now = datetime.now(timezone.utc)
+    today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    week_start = today_start - timedelta(days=6)
+    month_start = today_start - timedelta(days=29)
+
+    def window(start):
+        views = db.query(func.count(PageView.id)).filter(PageView.created_at >= start).scalar() or 0
+        visitors = (
+            db.query(func.count(func.distinct(PageView.visitor)))
+            .filter(PageView.created_at >= start)
+            .scalar()
+            or 0
+        )
+        return views, visitors
+
+    today_views, today_visitors = window(today_start)
+    week_views, week_visitors = window(week_start)
+    total_views = db.query(func.count(PageView.id)).scalar() or 0
+
+    daily = []
+    for offset in range(6, -1, -1):
+        day_start = today_start - timedelta(days=offset)
+        day_end = day_start + timedelta(days=1)
+        day_filter = (PageView.created_at >= day_start, PageView.created_at < day_end)
+        daily.append(
+            schemas.VisitDay(
+                date=day_start.strftime("%Y-%m-%d"),
+                views=db.query(func.count(PageView.id)).filter(*day_filter).scalar() or 0,
+                visitors=db.query(func.count(func.distinct(PageView.visitor)))
+                .filter(*day_filter)
+                .scalar()
+                or 0,
+            )
+        )
+
+    top = (
+        db.query(PageView.path, func.count(PageView.id).label("views"))
+        .filter(PageView.created_at >= month_start)
+        .group_by(PageView.path)
+        .order_by(func.count(PageView.id).desc())
+        .limit(5)
+        .all()
+    )
+
+    return schemas.VisitStats(
+        today_views=today_views,
+        today_visitors=today_visitors,
+        week_views=week_views,
+        week_visitors=week_visitors,
+        total_views=total_views,
+        daily=daily,
+        top_pages=[schemas.TopPage(path=path, views=views) for path, views in top],
+    )
+
+
 @router.get("/stats", response_model=schemas.AdminStats)
 def admin_stats(db: Session = Depends(get_db)):
     from .public import get_site_settings
@@ -251,4 +312,5 @@ def admin_stats(db: Session = Depends(get_db)):
             schemas.ContactMessageOut.model_validate(m)
             for m in sorted(messages, key=lambda m: m.created_at, reverse=True)[:3]
         ],
+        visits=_visit_stats(db),
     )

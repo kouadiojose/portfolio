@@ -16,6 +16,15 @@ interface AdminStats {
     values: number;
     stack: number;
   };
+  visits: {
+    today_views: number;
+    today_visitors: number;
+    week_views: number;
+    week_visitors: number;
+    total_views: number;
+    daily: { date: string; views: number; visitors: number }[];
+    top_pages: { path: string; views: number }[];
+  };
   latest_messages: {
     id: number;
     name: string;
@@ -38,6 +47,11 @@ interface AdminStats {
 
     @if (stats(); as s) {
       <div class="stat-grid">
+        <div class="stat-tile hue-cyan">
+          <span class="stat-number">{{ s.visits.today_visitors }}</span>
+          <span class="stat-label">Visitor{{ s.visits.today_visitors === 1 ? '' : 's' }} today</span>
+          <span class="stat-sub">{{ s.visits.week_visitors }} this week · {{ s.visits.total_views }} views all time</span>
+        </div>
         <a class="stat-tile hue-indigo" routerLink="/admin/messages">
           <span class="stat-number">{{ s.messages.unread }}</span>
           <span class="stat-label">Unread message{{ s.messages.unread === 1 ? '' : 's' }}</span>
@@ -48,7 +62,7 @@ interface AdminStats {
           <span class="stat-label">Visible projects</span>
           <span class="stat-sub">{{ s.projects.total }} in database</span>
         </a>
-        <a class="stat-tile hue-cyan" routerLink="/admin/experiences">
+        <a class="stat-tile hue-rose" routerLink="/admin/experiences">
           <span class="stat-number">{{ s.experiences }}</span>
           <span class="stat-label">Experience entries</span>
           <span class="stat-sub">{{ s.stack_items }} stack items · {{ s.values }} value props</span>
@@ -65,6 +79,35 @@ interface AdminStats {
             }
           </span>
         </a>
+      </div>
+
+      <div class="admin-panel">
+        <h2>Audience — last 7 days</h2>
+        <div class="audience-grid">
+          <div class="audience-chart" aria-label="Daily views">
+            @for (day of s.visits.daily; track day.date) {
+              <div class="audience-col">
+                <div class="audience-bar-wrap">
+                  <div class="audience-bar" [style.height.%]="barHeight(day.views, s)"
+                       [title]="day.views + ' views · ' + day.visitors + ' visitors'"></div>
+                </div>
+                <span class="audience-day">{{ day.date.slice(5) }}</span>
+                <span class="audience-count">{{ day.views }}</span>
+              </div>
+            }
+          </div>
+          <div>
+            <h3 class="audience-subtitle">Top pages (30 days)</h3>
+            @if (!s.visits.top_pages.length) {
+              <p style="color: var(--text-3); font-size: 13.5px;">No visits recorded yet.</p>
+            }
+            <ul class="audience-pages">
+              @for (pageStat of s.visits.top_pages; track pageStat.path) {
+                <li><code>{{ pageStat.path }}</code><span>{{ pageStat.views }}</span></li>
+              }
+            </ul>
+          </div>
+        </div>
       </div>
 
       <div class="dash-columns">
@@ -143,6 +186,11 @@ export class DashboardComponent {
 
   constructor() {
     this.http.get<AdminStats>('/api/admin/stats').subscribe((s) => this.stats.set(s));
+  }
+
+  barHeight(views: number, s: AdminStats): number {
+    const max = Math.max(...s.visits.daily.map((d) => d.views), 1);
+    return Math.max((views / max) * 100, views > 0 ? 6 : 2);
   }
 
   gapTotal(s: AdminStats): number {

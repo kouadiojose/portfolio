@@ -227,6 +227,27 @@ class TranslationGaps(BaseModel):
         return self.settings + self.projects + self.experiences + self.values + self.stack
 
 
+class VisitDay(BaseModel):
+    date: str          # ISO date (UTC)
+    views: int
+    visitors: int
+
+
+class TopPage(BaseModel):
+    path: str
+    views: int
+
+
+class VisitStats(BaseModel):
+    today_views: int
+    today_visitors: int
+    week_views: int
+    week_visitors: int
+    total_views: int
+    daily: list[VisitDay]      # last 7 days, oldest first
+    top_pages: list[TopPage]   # last 30 days
+
+
 class AdminStats(BaseModel):
     messages: MessageStats
     projects: ProjectStats
@@ -235,6 +256,12 @@ class AdminStats(BaseModel):
     values: int
     translation_gaps: TranslationGaps
     latest_messages: list["ContactMessageOut"]
+    visits: VisitStats
+
+
+class TrackPayload(BaseModel):
+    path: str = Field(min_length=1, max_length=300)
+    language: Literal["en", "fr"] = "en"
 
 
 # ---------- Contact ----------

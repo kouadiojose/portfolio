@@ -291,3 +291,28 @@ def test_contact_rate_limit(client):
         ).status_code == 201
     r = client.post("/api/contact", json={**base, "challenge": make_challenge()}, headers=ip)
     assert r.status_code == 429
+
+
+def test_tracking_and_visit_stats(client, auth_headers):
+    ua = {"User-Agent": "pytest-browser", "X-Forwarded-For": "203.0.113.50"}
+
+    # Two views on the home page from the same visitor within 30 min → 1 counted
+    assert client.post("/api/track", json={"path": "/fr", "language": "fr"}, headers=ua).status_code == 204
+    assert client.post("/api/track", json={"path": "/fr", "language": "fr"}, headers=ua).status_code == 204
+    # A different page counts
+    assert client.post("/api/track", json={"path": "/fr/contact", "language": "fr"}, headers=ua).status_code == 204
+    # Another visitor on the same page counts
+    other = {"User-Agent": "pytest-browser-2", "X-Forwarded-For": "203.0.113.51"}
+    assert client.post("/api/track", json={"path": "/fr", "language": "fr"}, headers=other).status_code == 204
+    # Admin paths are never tracked
+    assert client.post("/api/track", json={"path": "/admin/dashboard", "language": "fr"}, headers=ua).status_code == 204
+
+    stats = client.get("/api/admin/stats", headers=auth_headers).json()
+    visits = stats["visits"]
+    assert visits["today_views"] == 3
+    assert visits["today_visitors"] == 2
+    assert visits["total_views"] == 3
+    assert len(visits["daily"]) == 7
+    assert visits["daily"][-1]["views"] == 3
+    top_paths = {p["path"] for p in visits["top_pages"]}
+    assert "/fr" in top_paths and "/admin/dashboard" not in top_paths

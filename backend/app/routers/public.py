@@ -14,11 +14,13 @@ from ..i18n import normalize_lang, resolve
 from ..models import (
     ContactMessage,
     Experience,
+    PageView,
     Project,
     SiteSettings,
     StackItem,
     ValueProp,
 )
+from ..tracking import visitor_hash
 
 router = APIRouter(prefix="/api", tags=["public"])
 
@@ -125,6 +127,31 @@ def get_project(slug: str, lang: str = Query("en"), db: Session = Depends(get_db
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     return _project_public(project, normalize_lang(lang))
+
+
+@router.post("/track", status_code=status.HTTP_204_NO_CONTENT)
+def track(payload: schemas.TrackPayload, request: Request, db: Session = Depends(get_db)):
+    """First-party, privacy-friendly page-view tracking (no cookies, no PII)."""
+    path = payload.path.split("?")[0].split("#")[0]
+    if path.startswith("/admin"):
+        return
+    visitor = visitor_hash(client_ip(request), request.headers.get("user-agent", ""))
+    # One view per visitor+path per 30 minutes — refreshes don't inflate numbers
+    from datetime import datetime, timedelta, timezone
+
+    recent = (
+        db.query(PageView)
+        .filter(
+            PageView.visitor == visitor,
+            PageView.path == path,
+            PageView.created_at > datetime.now(timezone.utc) - timedelta(minutes=30),
+        )
+        .first()
+    )
+    if recent:
+        return
+    db.add(PageView(path=path, language=payload.language, visitor=visitor))
+    db.commit()
 
 
 @router.get("/contact/challenge")

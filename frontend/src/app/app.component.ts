@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
+import { TrackingService } from './core/tracking.service';
 import { FooterComponent } from './shared/footer.component';
 import { HeaderComponent } from './shared/header.component';
 
@@ -15,4 +16,8 @@ import { HeaderComponent } from './shared/header.component';
     <app-footer />
   `,
 })
-export class AppComponent {}
+export class AppComponent {
+  constructor() {
+    inject(TrackingService).start();
+  }
+}

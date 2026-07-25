@@ -96,6 +96,22 @@ class ValueProp(Base):
     sort_order: Mapped[int] = mapped_column(Integer, default=0)
 
 
+class PageView(Base):
+    """Privacy-friendly analytics: no raw IP or user agent is stored.
+
+    `visitor` is a salted daily hash of ip+user-agent, so unique visitors can
+    be counted per day without any personally identifiable data at rest.
+    """
+
+    __tablename__ = "page_views"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    path: Mapped[str] = mapped_column(String(300), index=True)
+    language: Mapped[str] = mapped_column(String(5), default="en")
+    visitor: Mapped[str] = mapped_column(String(64), index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+
+
 class ContactMessage(Base):
     __tablename__ = "contact_messages"
 
