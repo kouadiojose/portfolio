@@ -9,43 +9,43 @@ import { fromStr, toStr } from './i18n-form.util';
   selector: 'app-admin-stack',
   imports: [ReactiveFormsModule],
   template: `
-    <h1>Tech stack</h1>
-    <p class="admin-sub">Technologies grouped by category — category labels are bilingual.</p>
+    <h1>Stack technique</h1>
+    <p class="admin-sub">Technologies groupées par catégorie — les libellés de catégorie sont bilingues.</p>
 
     <div class="admin-toolbar">
       <span></span>
-      <button class="btn btn-primary btn-sm" (click)="startCreate()">+ New item</button>
+      <button class="btn btn-primary btn-sm" (click)="startCreate()">+ Nouvel élément</button>
     </div>
 
     @if (editing() !== null) {
       <div class="admin-panel">
-        <h2>{{ editing()!.id ? 'Edit item' : 'New item' }}</h2>
+        <h2>{{ editing()!.id ? "Modifier l'élément" : 'Nouvel élément' }}</h2>
         <form class="form" [formGroup]="form" (ngSubmit)="save()">
           <div class="i18n-pair">
             <div class="form-field">
-              <label>Category <span class="i18n-tag">EN</span> <span class="hint">(e.g. Frontend, Security)</span></label>
+              <label>Catégorie <span class="i18n-tag">EN</span> <span class="hint">(ex. Frontend, Security)</span></label>
               <input formControlName="category_en">
             </div>
             <div class="form-field">
-              <label>Category <span class="i18n-tag">FR</span> <span class="hint">(ex. Frontend, Sécurité)</span></label>
+              <label>Catégorie <span class="i18n-tag">FR</span> <span class="hint">(ex. Frontend, Sécurité)</span></label>
               <input formControlName="category_fr">
             </div>
           </div>
           <div class="form-row">
             <div class="form-field">
-              <label>Technology</label>
+              <label>Technologie</label>
               <input formControlName="name">
             </div>
             <div class="form-field" style="max-width: 160px;">
-              <label>Sort order</label>
+              <label>Ordre d'affichage</label>
               <input type="number" formControlName="sort_order">
             </div>
           </div>
           <div style="display: flex; gap: 10px;">
             <button class="btn btn-primary" type="submit" [disabled]="form.invalid || saving()">
-              {{ saving() ? 'Saving…' : 'Save' }}
+              {{ saving() ? 'Enregistrement…' : 'Enregistrer' }}
             </button>
-            <button class="btn btn-quiet" type="button" (click)="editing.set(null)">Cancel</button>
+            <button class="btn btn-quiet" type="button" (click)="editing.set(null)">Annuler</button>
           </div>
         </form>
       </div>
@@ -53,7 +53,7 @@ import { fromStr, toStr } from './i18n-form.util';
 
     @if (items(); as list) {
       <table class="admin-table">
-        <thead><tr><th>Order</th><th>Category</th><th>Technology</th><th></th></tr></thead>
+        <thead><tr><th>Ordre</th><th>Catégorie</th><th>Technologie</th><th></th></tr></thead>
         <tbody>
           @for (item of list; track item.id) {
             <tr>
@@ -61,8 +61,8 @@ import { fromStr, toStr } from './i18n-form.util';
               <td>{{ item.category['en'] }}</td>
               <td><strong>{{ item.name }}</strong></td>
               <td class="row-actions">
-                <button class="btn btn-outline btn-sm" (click)="startEdit(item)">Edit</button>
-                <button class="btn btn-danger btn-sm" (click)="remove(item)">Delete</button>
+                <button class="btn btn-outline btn-sm" (click)="startEdit(item)">Modifier</button>
+                <button class="btn btn-danger btn-sm" (click)="remove(item)">Supprimer</button>
               </td>
             </tr>
           }
@@ -130,7 +130,7 @@ export class StackEditorComponent {
   }
 
   remove(item: AdminStackItem): void {
-    if (!confirm(`Delete "${item.name}"?`)) return;
+    if (!confirm(`Supprimer « ${item.name} » ?`)) return;
     this.api.delete('stack', item.id).subscribe(() => this.load());
   }
 }

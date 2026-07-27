@@ -9,68 +9,68 @@ import { fromLines, fromStr, toLines, toStr } from './i18n-form.util';
   selector: 'app-admin-experiences',
   imports: [ReactiveFormsModule],
   template: `
-    <h1>Experience</h1>
-    <p class="admin-sub">Professional timeline entries in both languages.</p>
+    <h1>Expériences</h1>
+    <p class="admin-sub">Parcours professionnel dans les deux langues.</p>
 
     <div class="admin-toolbar">
       <span></span>
-      <button class="btn btn-primary btn-sm" (click)="startCreate()">+ New entry</button>
+      <button class="btn btn-primary btn-sm" (click)="startCreate()">+ Nouvelle entrée</button>
     </div>
 
     @if (editing() !== null) {
       <div class="admin-panel">
-        <h2>{{ editing()!.id ? 'Edit entry' : 'New entry' }}</h2>
+        <h2>{{ editing()!.id ? "Modifier l'entrée" : 'Nouvelle entrée' }}</h2>
         <form class="form" [formGroup]="form" (ngSubmit)="save()">
           <div class="i18n-pair">
             <div class="form-field">
-              <label>Title <span class="i18n-tag">EN</span></label>
+              <label>Titre <span class="i18n-tag">EN</span></label>
               <input formControlName="title_en">
             </div>
             <div class="form-field">
-              <label>Title <span class="i18n-tag">FR</span></label>
+              <label>Titre <span class="i18n-tag">FR</span></label>
               <input formControlName="title_fr">
             </div>
           </div>
           <div class="i18n-pair">
             <div class="form-field">
-              <label>Organization <span class="i18n-tag">EN</span></label>
+              <label>Organisation <span class="i18n-tag">EN</span></label>
               <input formControlName="organization_en">
             </div>
             <div class="form-field">
-              <label>Organization <span class="i18n-tag">FR</span></label>
+              <label>Organisation <span class="i18n-tag">FR</span></label>
               <input formControlName="organization_fr">
             </div>
           </div>
           <div class="form-field" style="max-width: 160px;">
-            <label>Sort order</label>
+            <label>Ordre d'affichage</label>
             <input type="number" formControlName="sort_order">
           </div>
           <div class="i18n-pair">
             <div class="form-field">
-              <label>Period <span class="i18n-tag">EN</span> <span class="hint">(e.g. 2022 — present)</span></label>
+              <label>Période <span class="i18n-tag">EN</span> <span class="hint">(ex. 2022 — present)</span></label>
               <input formControlName="period_en">
             </div>
             <div class="form-field">
-              <label>Period <span class="i18n-tag">FR</span> <span class="hint">(ex. 2022 — aujourd'hui)</span></label>
+              <label>Période <span class="i18n-tag">FR</span> <span class="hint">(ex. 2022 — aujourd'hui)</span></label>
               <input formControlName="period_fr">
             </div>
           </div>
           <div class="i18n-pair">
             <div class="form-field">
-              <label>Impact bullets <span class="i18n-tag">EN</span> <span class="hint">(one per line)</span></label>
+              <label>Points d'impact <span class="i18n-tag">EN</span> <span class="hint">(un par ligne)</span></label>
               <textarea formControlName="bullets_en" rows="4"></textarea>
             </div>
             <div class="form-field">
-              <label>Impact bullets <span class="i18n-tag">FR</span> <span class="hint">(one per line)</span></label>
+              <label>Points d'impact <span class="i18n-tag">FR</span> <span class="hint">(un par ligne)</span></label>
               <textarea formControlName="bullets_fr" rows="4"></textarea>
             </div>
           </div>
 
           <div style="display: flex; gap: 10px;">
             <button class="btn btn-primary" type="submit" [disabled]="form.invalid || saving()">
-              {{ saving() ? 'Saving…' : 'Save' }}
+              {{ saving() ? 'Enregistrement…' : 'Enregistrer' }}
             </button>
-            <button class="btn btn-quiet" type="button" (click)="editing.set(null)">Cancel</button>
+            <button class="btn btn-quiet" type="button" (click)="editing.set(null)">Annuler</button>
           </div>
         </form>
       </div>
@@ -78,7 +78,7 @@ import { fromLines, fromStr, toLines, toStr } from './i18n-form.util';
 
     @if (experiences(); as list) {
       <table class="admin-table">
-        <thead><tr><th>Order</th><th>Title</th><th>Organization</th><th></th></tr></thead>
+        <thead><tr><th>Ordre</th><th>Titre</th><th>Organisation</th><th></th></tr></thead>
         <tbody>
           @for (experience of list; track experience.id) {
             <tr>
@@ -86,8 +86,8 @@ import { fromLines, fromStr, toLines, toStr } from './i18n-form.util';
               <td><strong>{{ experience.title['en'] }}</strong></td>
               <td>{{ experience.organization['en'] }}</td>
               <td class="row-actions">
-                <button class="btn btn-outline btn-sm" (click)="startEdit(experience)">Edit</button>
-                <button class="btn btn-danger btn-sm" (click)="remove(experience)">Delete</button>
+                <button class="btn btn-outline btn-sm" (click)="startEdit(experience)">Modifier</button>
+                <button class="btn btn-danger btn-sm" (click)="remove(experience)">Supprimer</button>
               </td>
             </tr>
           }
@@ -167,7 +167,7 @@ export class ExperiencesEditorComponent {
   }
 
   remove(e: AdminExperience): void {
-    if (!confirm(`Delete "${e.title['en']}"?`)) return;
+    if (!confirm(`Supprimer « ${e.title['en']} » ?`)) return;
     this.api.delete('experiences', e.id).subscribe(() => this.load());
   }
 }

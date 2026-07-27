@@ -11,7 +11,7 @@ import { AuthService } from '../../core/auth.service';
     <div class="admin-login-wrap">
       <div class="admin-login-card">
         <h1>Admin</h1>
-        <p>Sign in to manage the portfolio content.</p>
+        <p>Connectez-vous pour gérer le contenu du portfolio.</p>
 
         <form class="form" [formGroup]="form" (ngSubmit)="submit()">
           <div class="form-field">
@@ -19,7 +19,7 @@ import { AuthService } from '../../core/auth.service';
             <input id="email" type="email" formControlName="email" autocomplete="username">
           </div>
           <div class="form-field">
-            <label for="password">Password</label>
+            <label for="password">Mot de passe</label>
             <input id="password" type="password" formControlName="password" autocomplete="current-password">
           </div>
 
@@ -28,7 +28,7 @@ import { AuthService } from '../../core/auth.service';
           }
 
           <button class="btn btn-primary" type="submit" [disabled]="form.invalid || loading()">
-            {{ loading() ? 'Signing in…' : 'Sign in' }}
+            {{ loading() ? 'Connexion…' : 'Se connecter' }}
           </button>
         </form>
       </div>
@@ -57,7 +57,7 @@ export class LoginComponent {
       next: () => this.router.navigate(['/admin']),
       error: (err) => {
         this.loading.set(false);
-        this.error.set(err.status === 401 ? 'Invalid email or password.' : 'Login failed. Please retry.');
+        this.error.set(err.status === 401 ? 'Email ou mot de passe incorrect.' : 'Échec de la connexion. Veuillez réessayer.');
       },
     });
   }

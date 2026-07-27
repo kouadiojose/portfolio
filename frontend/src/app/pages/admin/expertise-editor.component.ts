@@ -8,32 +8,32 @@ import { ExpertiseItem } from '../../core/models';
   selector: 'app-admin-expertise',
   imports: [ReactiveFormsModule],
   template: `
-    <h1>Core expertise</h1>
-    <p class="admin-sub">Capability blocks shown in the "What I do best" section.</p>
+    <h1>Expertise clé</h1>
+    <p class="admin-sub">Blocs de compétences affichés dans la section « Ce que je fais de mieux ».</p>
 
     <div class="admin-toolbar">
       <span></span>
-      <button class="btn btn-primary btn-sm" (click)="startCreate()">+ New block</button>
+      <button class="btn btn-primary btn-sm" (click)="startCreate()">+ Nouveau bloc</button>
     </div>
 
     @if (editing() !== null) {
       <div class="admin-panel">
-        <h2>{{ editing()!.id ? 'Edit block' : 'New block' }}</h2>
+        <h2>{{ editing()!.id ? 'Modifier le bloc' : 'Nouveau bloc' }}</h2>
         <form class="form" style="max-width: none;" [formGroup]="form" (ngSubmit)="save()">
           <div class="form-row">
             <div class="form-field">
-              <label for="title">Title</label>
+              <label for="title">Titre</label>
               <input id="title" formControlName="title">
             </div>
             <div class="form-field">
-              <label for="icon">Icon</label>
+              <label for="icon">Icône</label>
               <select id="icon" formControlName="icon">
-                <option value="app">App window</option>
-                <option value="api">API / links</option>
-                <option value="shield">Shield (security)</option>
-                <option value="database">Database</option>
-                <option value="gear">Gear (DevOps)</option>
-                <option value="chart">Chart (business)</option>
+                <option value="app">Fenêtre d'application</option>
+                <option value="api">API / liens</option>
+                <option value="shield">Bouclier (sécurité)</option>
+                <option value="database">Base de données</option>
+                <option value="gear">Engrenage (DevOps)</option>
+                <option value="chart">Graphique (métier)</option>
               </select>
             </div>
           </div>
@@ -42,14 +42,14 @@ import { ExpertiseItem } from '../../core/models';
             <textarea id="description" formControlName="description" rows="3"></textarea>
           </div>
           <div class="form-field" style="max-width: 200px;">
-            <label for="sort_order">Sort order</label>
+            <label for="sort_order">Ordre d'affichage</label>
             <input id="sort_order" type="number" formControlName="sort_order">
           </div>
           <div style="display: flex; gap: 10px;">
             <button class="btn btn-primary" type="submit" [disabled]="form.invalid || saving()">
-              {{ saving() ? 'Saving…' : 'Save' }}
+              {{ saving() ? 'Enregistrement…' : 'Enregistrer' }}
             </button>
-            <button class="btn btn-ghost" type="button" (click)="editing.set(null)">Cancel</button>
+            <button class="btn btn-ghost" type="button" (click)="editing.set(null)">Annuler</button>
           </div>
         </form>
       </div>
@@ -57,7 +57,7 @@ import { ExpertiseItem } from '../../core/models';
 
     @if (items(); as list) {
       <table class="admin-table">
-        <thead><tr><th>Order</th><th>Title</th><th>Description</th><th></th></tr></thead>
+        <thead><tr><th>Ordre</th><th>Titre</th><th>Description</th><th></th></tr></thead>
         <tbody>
           @for (item of list; track item.id) {
             <tr>
@@ -65,15 +65,15 @@ import { ExpertiseItem } from '../../core/models';
               <td><strong>{{ item.title }}</strong></td>
               <td>{{ item.description }}</td>
               <td class="row-actions">
-                <button class="btn btn-secondary btn-sm" (click)="startEdit(item)">Edit</button>
-                <button class="btn btn-danger btn-sm" (click)="remove(item)">Delete</button>
+                <button class="btn btn-secondary btn-sm" (click)="startEdit(item)">Modifier</button>
+                <button class="btn btn-danger btn-sm" (click)="remove(item)">Supprimer</button>
               </td>
             </tr>
           }
         </tbody>
       </table>
     } @else {
-      <div class="loading-state"><div class="spinner"></div>Loading…</div>
+      <div class="loading-state"><div class="spinner"></div>Chargement…</div>
     }
   `,
 })
@@ -126,7 +126,7 @@ export class ExpertiseEditorComponent {
   }
 
   remove(item: ExpertiseItem): void {
-    if (!confirm(`Delete "${item.title}"?`)) return;
+    if (!confirm(`Supprimer « ${item.title} » ?`)) return;
     this.api.delete('expertise', item.id).subscribe(() => this.load());
   }
 }

@@ -10,15 +10,15 @@ import { AuthService } from '../../core/auth.service';
     <div class="admin-shell">
       <aside class="admin-sidebar">
         <nav>
-          <a routerLink="dashboard" routerLinkActive="is-active">Dashboard</a>
-          <a routerLink="messages" routerLinkActive="is-active">Inbox</a>
-          <a routerLink="settings" routerLinkActive="is-active">Site content</a>
-          <a routerLink="projects" routerLinkActive="is-active">Projects</a>
-          <a routerLink="experiences" routerLinkActive="is-active">Experience</a>
-          <a routerLink="stack" routerLinkActive="is-active">Tech stack</a>
-          <a routerLink="values" routerLinkActive="is-active">Value props</a>
-          <a routerLink="account" routerLinkActive="is-active">Account</a>
-          <a href="#" (click)="logout($event)">Sign out</a>
+          <a routerLink="dashboard" routerLinkActive="is-active">Tableau de bord</a>
+          <a routerLink="messages" routerLinkActive="is-active">Boîte de réception</a>
+          <a routerLink="settings" routerLinkActive="is-active">Contenu du site</a>
+          <a routerLink="projects" routerLinkActive="is-active">Projets</a>
+          <a routerLink="experiences" routerLinkActive="is-active">Expériences</a>
+          <a routerLink="stack" routerLinkActive="is-active">Stack technique</a>
+          <a routerLink="values" routerLinkActive="is-active">Atouts</a>
+          <a routerLink="account" routerLinkActive="is-active">Compte</a>
+          <a href="#" (click)="logout($event)">Déconnexion</a>
         </nav>
       </aside>
       <main class="admin-main">

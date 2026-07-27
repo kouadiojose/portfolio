@@ -11,8 +11,8 @@ import { fromLines, fromStr, toLines, toStr } from './i18n-form.util';
   selector: 'app-admin-settings',
   imports: [ReactiveFormsModule],
   template: `
-    <h1>Site content</h1>
-    <p class="admin-sub">Global texts in both languages. Changes are live immediately after saving.</p>
+    <h1>Contenu du site</h1>
+    <p class="admin-sub">Textes globaux dans les deux langues. Les changements sont en ligne dès l'enregistrement.</p>
 
     @if (loaded()) {
       <form [formGroup]="form" (ngSubmit)="save()">
@@ -20,56 +20,56 @@ import { fromLines, fromStr, toLines, toStr } from './i18n-form.util';
           <h2>Hero</h2>
           <div class="form">
             <div class="form-field">
-              <label>Full name</label>
+              <label>Nom complet</label>
               <input formControlName="full_name">
             </div>
             <div class="i18n-pair">
               <div class="form-field">
-                <label>Headline <span class="i18n-tag">EN</span></label>
+                <label>Titre principal <span class="i18n-tag">EN</span></label>
                 <input formControlName="headline_en">
               </div>
               <div class="form-field">
-                <label>Headline <span class="i18n-tag">FR</span></label>
+                <label>Titre principal <span class="i18n-tag">FR</span></label>
                 <input formControlName="headline_fr">
               </div>
             </div>
             <div class="i18n-pair">
               <div class="form-field">
-                <label>Tagline <span class="i18n-tag">EN</span></label>
+                <label>Accroche <span class="i18n-tag">EN</span></label>
                 <textarea formControlName="tagline_en" rows="2"></textarea>
               </div>
               <div class="form-field">
-                <label>Tagline <span class="i18n-tag">FR</span></label>
+                <label>Accroche <span class="i18n-tag">FR</span></label>
                 <textarea formControlName="tagline_fr" rows="2"></textarea>
               </div>
             </div>
             <div class="i18n-pair">
               <div class="form-field">
-                <label>Subtitle <span class="i18n-tag">EN</span></label>
+                <label>Sous-titre <span class="i18n-tag">EN</span></label>
                 <textarea formControlName="hero_subtitle_en" rows="2"></textarea>
               </div>
               <div class="form-field">
-                <label>Subtitle <span class="i18n-tag">FR</span></label>
+                <label>Sous-titre <span class="i18n-tag">FR</span></label>
                 <textarea formControlName="hero_subtitle_fr" rows="2"></textarea>
               </div>
             </div>
             <div class="i18n-pair">
               <div class="form-field">
-                <label>Availability <span class="i18n-tag">EN</span></label>
+                <label>Disponibilité <span class="i18n-tag">EN</span></label>
                 <input formControlName="availability_en">
               </div>
               <div class="form-field">
-                <label>Availability <span class="i18n-tag">FR</span></label>
+                <label>Disponibilité <span class="i18n-tag">FR</span></label>
                 <input formControlName="availability_fr">
               </div>
             </div>
             <div class="i18n-pair">
               <div class="form-field">
-                <label>Impact strip <span class="i18n-tag">EN</span> <span class="hint">(one per line)</span></label>
+                <label>Bandeau d'impacts <span class="i18n-tag">EN</span> <span class="hint">(un par ligne)</span></label>
                 <textarea formControlName="impacts_en" rows="4"></textarea>
               </div>
               <div class="form-field">
-                <label>Impact strip <span class="i18n-tag">FR</span> <span class="hint">(one per line)</span></label>
+                <label>Bandeau d'impacts <span class="i18n-tag">FR</span> <span class="hint">(un par ligne)</span></label>
                 <textarea formControlName="impacts_fr" rows="4"></textarea>
               </div>
             </div>
@@ -77,35 +77,35 @@ import { fromLines, fromStr, toLines, toStr } from './i18n-form.util';
         </div>
 
         <div class="admin-panel">
-          <h2>About</h2>
+          <h2>À propos</h2>
           <div class="form">
             <div class="i18n-pair">
               <div class="form-field">
-                <label>Section title <span class="i18n-tag">EN</span></label>
+                <label>Titre de section <span class="i18n-tag">EN</span></label>
                 <input formControlName="about_title_en">
               </div>
               <div class="form-field">
-                <label>Section title <span class="i18n-tag">FR</span></label>
+                <label>Titre de section <span class="i18n-tag">FR</span></label>
                 <input formControlName="about_title_fr">
               </div>
             </div>
             <div class="i18n-pair">
               <div class="form-field">
-                <label>Paragraphs <span class="i18n-tag">EN</span> <span class="hint">(one per line)</span></label>
+                <label>Paragraphes <span class="i18n-tag">EN</span> <span class="hint">(un par ligne)</span></label>
                 <textarea formControlName="about_paragraphs_en" rows="5"></textarea>
               </div>
               <div class="form-field">
-                <label>Paragraphs <span class="i18n-tag">FR</span> <span class="hint">(one per line)</span></label>
+                <label>Paragraphes <span class="i18n-tag">FR</span> <span class="hint">(un par ligne)</span></label>
                 <textarea formControlName="about_paragraphs_fr" rows="5"></textarea>
               </div>
             </div>
             <div class="i18n-pair">
               <div class="form-field">
-                <label>"How I work" principles <span class="i18n-tag">EN</span> <span class="hint">(one per line)</span></label>
+                <label>Principes « Ma façon de travailler » <span class="i18n-tag">EN</span> <span class="hint">(un par ligne)</span></label>
                 <textarea formControlName="principles_en" rows="4"></textarea>
               </div>
               <div class="form-field">
-                <label>"How I work" principles <span class="i18n-tag">FR</span> <span class="hint">(one per line)</span></label>
+                <label>Principes « Ma façon de travailler » <span class="i18n-tag">FR</span> <span class="hint">(un par ligne)</span></label>
                 <textarea formControlName="principles_fr" rows="4"></textarea>
               </div>
             </div>
@@ -113,45 +113,45 @@ import { fromLines, fromStr, toLines, toStr } from './i18n-form.util';
         </div>
 
         <div class="admin-panel">
-          <h2>Contact & links</h2>
+          <h2>Contact & liens</h2>
           <div class="form">
             <div class="form-row">
               <div class="form-field">
-                <label>Public email</label>
+                <label>Email public</label>
                 <input formControlName="email">
               </div>
               <div class="form-field">
-                <label>LinkedIn URL</label>
+                <label>URL LinkedIn</label>
                 <input formControlName="linkedin_url">
               </div>
             </div>
             <div class="form-row">
               <div class="form-field">
-                <label>GitHub URL</label>
+                <label>URL GitHub</label>
                 <input formControlName="github_url">
               </div>
               <div class="form-field">
-                <label>Phone</label>
+                <label>Téléphone</label>
                 <input formControlName="phone">
               </div>
             </div>
             <div class="i18n-pair">
               <div class="form-field">
-                <label>CV file <span class="i18n-tag">EN</span></label>
+                <label>Fichier CV <span class="i18n-tag">EN</span></label>
                 <input formControlName="cv_url_en">
               </div>
               <div class="form-field">
-                <label>CV file <span class="i18n-tag">FR</span></label>
+                <label>Fichier CV <span class="i18n-tag">FR</span></label>
                 <input formControlName="cv_url_fr">
               </div>
             </div>
             <div class="i18n-pair">
               <div class="form-field">
-                <label>Contact intro <span class="i18n-tag">EN</span></label>
+                <label>Intro contact <span class="i18n-tag">EN</span></label>
                 <textarea formControlName="contact_lead_en" rows="2"></textarea>
               </div>
               <div class="form-field">
-                <label>Contact intro <span class="i18n-tag">FR</span></label>
+                <label>Intro contact <span class="i18n-tag">FR</span></label>
                 <textarea formControlName="contact_lead_fr" rows="2"></textarea>
               </div>
             </div>
@@ -159,14 +159,14 @@ import { fromLines, fromStr, toLines, toStr } from './i18n-form.util';
         </div>
 
         @if (saved()) {
-          <div class="alert alert-success" style="margin-bottom: 18px;">Saved. The public site is up to date.</div>
+          <div class="alert alert-success" style="margin-bottom: 18px;">Enregistré. Le site public est à jour.</div>
         }
         @if (error()) {
-          <div class="alert alert-error" style="margin-bottom: 18px;">Saving failed. Please retry.</div>
+          <div class="alert alert-error" style="margin-bottom: 18px;">Échec de l'enregistrement. Veuillez réessayer.</div>
         }
 
         <button class="btn btn-primary" type="submit" [disabled]="form.invalid || saving()">
-          {{ saving() ? 'Saving…' : 'Save changes' }}
+          {{ saving() ? 'Enregistrement…' : 'Enregistrer les modifications' }}
         </button>
       </form>
 

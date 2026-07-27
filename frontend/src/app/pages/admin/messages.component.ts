@@ -8,12 +8,12 @@ import { ContactMessage } from '../../core/models';
   selector: 'app-admin-messages',
   imports: [DatePipe],
   template: `
-    <h1>Inbox</h1>
-    <p class="admin-sub">Messages sent through the contact form.</p>
+    <h1>Boîte de réception</h1>
+    <p class="admin-sub">Messages envoyés via le formulaire de contact.</p>
 
     @if (messages(); as list) {
       @if (!list.length) {
-        <div class="empty-state">No messages yet.</div>
+        <div class="empty-state">Aucun message.</div>
       }
       @for (message of list; track message.id) {
         <div class="message-card">
@@ -25,7 +25,7 @@ import { ContactMessage } from '../../core/models';
             <div>
               <span class="badge badge-lang">{{ message.language === 'fr' ? 'Français' : 'English' }}</span>
               <span class="badge" [class.badge-new]="!message.read" [class.badge-read]="message.read">
-                {{ message.read ? 'Read' : 'New' }}
+                {{ message.read ? 'Lu' : 'Nouveau' }}
               </span>
               <span class="message-meta"> {{ message.created_at | date: 'medium' }}</span>
             </div>
@@ -35,16 +35,16 @@ import { ContactMessage } from '../../core/models';
           }
           <p class="message-body">{{ message.body }}</p>
           <div class="row-actions" style="display: flex; gap: 8px;">
-            <a class="btn btn-secondary btn-sm" [href]="'mailto:' + message.email">Reply by email</a>
+            <a class="btn btn-secondary btn-sm" [href]="'mailto:' + message.email">Répondre par email</a>
             @if (!message.read) {
-              <button class="btn btn-ghost btn-sm" (click)="markRead(message)">Mark as read</button>
+              <button class="btn btn-ghost btn-sm" (click)="markRead(message)">Marquer comme lu</button>
             }
-            <button class="btn btn-danger btn-sm" (click)="remove(message)">Delete</button>
+            <button class="btn btn-danger btn-sm" (click)="remove(message)">Supprimer</button>
           </div>
         </div>
       }
     } @else {
-      <div class="loading-state"><div class="spinner"></div>Loading…</div>
+      <div class="loading-state"><div class="spinner"></div>Chargement…</div>
     }
   `,
 })
@@ -67,7 +67,7 @@ export class MessagesComponent {
   }
 
   remove(message: ContactMessage): void {
-    if (!confirm(`Delete the message from ${message.name}?`)) return;
+    if (!confirm(`Supprimer le message de ${message.name} ?`)) return;
     this.api.deleteMessage(message.id).subscribe(() => {
       this.messages.update((list) => (list ?? []).filter((m) => m.id !== message.id));
     });

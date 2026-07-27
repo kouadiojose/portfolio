@@ -8,19 +8,19 @@ import { AuthService } from '../../core/auth.service';
   selector: 'app-admin-account',
   imports: [ReactiveFormsModule],
   template: `
-    <h1>Account</h1>
-    <p class="admin-sub">Your admin credentials. Signed in as <strong>{{ currentEmail() || '…' }}</strong></p>
+    <h1>Compte</h1>
+    <p class="admin-sub">Vos identifiants d'administration. Connecté en tant que <strong>{{ currentEmail() || '…' }}</strong></p>
 
     <div class="admin-panel">
-      <h2>Login email</h2>
+      <h2>Email de connexion</h2>
       <form class="form" [formGroup]="emailForm" (ngSubmit)="changeEmail()">
         <div class="form-row">
           <div class="form-field">
-            <label>New email</label>
+            <label>Nouvel email</label>
             <input type="email" formControlName="new_email" autocomplete="username">
           </div>
           <div class="form-field">
-            <label>Current password <span class="hint">(required to confirm)</span></label>
+            <label>Mot de passe actuel <span class="hint">(requis pour confirmer)</span></label>
             <input type="password" formControlName="password" autocomplete="current-password">
           </div>
         </div>
@@ -31,22 +31,22 @@ import { AuthService } from '../../core/auth.service';
         }
         <div>
           <button class="btn btn-primary" type="submit" [disabled]="emailForm.invalid || busy()">
-            Update email
+            Mettre à jour l'email
           </button>
         </div>
       </form>
     </div>
 
     <div class="admin-panel">
-      <h2>Password</h2>
+      <h2>Mot de passe</h2>
       <form class="form" [formGroup]="passwordForm" (ngSubmit)="changePassword()">
         <div class="form-row">
           <div class="form-field">
-            <label>Current password</label>
+            <label>Mot de passe actuel</label>
             <input type="password" formControlName="current_password" autocomplete="current-password">
           </div>
           <div class="form-field">
-            <label>New password <span class="hint">(min. 8 characters)</span></label>
+            <label>Nouveau mot de passe <span class="hint">(min. 8 caractères)</span></label>
             <input type="password" formControlName="new_password" autocomplete="new-password">
           </div>
         </div>
@@ -57,18 +57,18 @@ import { AuthService } from '../../core/auth.service';
         }
         <div>
           <button class="btn btn-primary" type="submit" [disabled]="passwordForm.invalid || busy()">
-            Update password
+            Mettre à jour le mot de passe
           </button>
         </div>
       </form>
     </div>
 
     <div class="admin-panel">
-      <h2>Good to know</h2>
+      <h2>Bon à savoir</h2>
       <p style="color: var(--text-2); font-size: 14px;">
-        Credentials live in the database — changes apply immediately and survive redeployments.
-        The <code>ADMIN_EMAIL</code> / <code>ADMIN_PASSWORD</code> environment variables are only
-        used to create the very first account when the database is empty.
+        Vos identifiants vivent en base de données — les changements sont immédiats et survivent aux redéploiements.
+        Les variables d'environnement <code>ADMIN_EMAIL</code> / <code>ADMIN_PASSWORD</code> ne servent
+        qu'à créer le tout premier compte quand la base est vide.
       </p>
     </div>
   `,
@@ -106,7 +106,7 @@ export class AccountComponent {
       next: () => {
         this.busy.set(false);
         this.emailOk.set(true);
-        this.emailMessage.set(`Email updated — you are now signed in as ${new_email}.`);
+        this.emailMessage.set(`Email mis à jour — vous êtes maintenant connecté en tant que ${new_email}.`);
         this.currentEmail.set(new_email);
         this.emailForm.reset();
       },
@@ -115,10 +115,10 @@ export class AccountComponent {
         this.emailOk.set(false);
         this.emailMessage.set(
           err.status === 400
-            ? 'Password is incorrect.'
+            ? 'Mot de passe incorrect.'
             : err.status === 409
-              ? 'This email is already in use.'
-              : 'Email update failed. Please retry.'
+              ? 'Cet email est déjà utilisé.'
+              : 'Échec de la mise à jour. Veuillez réessayer.'
         );
       },
     });
@@ -132,14 +132,14 @@ export class AccountComponent {
       next: () => {
         this.busy.set(false);
         this.passwordOk.set(true);
-        this.passwordMessage.set('Password updated.');
+        this.passwordMessage.set('Mot de passe mis à jour.');
         this.passwordForm.reset();
       },
       error: (err) => {
         this.busy.set(false);
         this.passwordOk.set(false);
         this.passwordMessage.set(
-          err.status === 400 ? 'Current password is incorrect.' : 'Password update failed.'
+          err.status === 400 ? 'Mot de passe actuel incorrect.' : 'Échec de la mise à jour du mot de passe.'
         );
       },
     });

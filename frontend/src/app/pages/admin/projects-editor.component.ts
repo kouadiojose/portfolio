@@ -9,144 +9,144 @@ import { fromLines, fromStr, toLines, toStr } from './i18n-form.util';
   selector: 'app-admin-projects',
   imports: [ReactiveFormsModule],
   template: `
-    <h1>Projects</h1>
-    <p class="admin-sub">Case studies in both languages. Unfeatured projects stay in the database but are hidden.</p>
+    <h1>Projets</h1>
+    <p class="admin-sub">Études de cas dans les deux langues. Les projets non mis en avant restent en base mais sont masqués.</p>
 
     <div class="admin-toolbar">
       <span></span>
-      <button class="btn btn-primary btn-sm" (click)="startCreate()">+ New project</button>
+      <button class="btn btn-primary btn-sm" (click)="startCreate()">+ Nouveau projet</button>
     </div>
 
     @if (editing() !== null) {
       <div class="admin-panel">
-        <h2>{{ editing()!.id ? 'Edit project' : 'New project' }}</h2>
+        <h2>{{ editing()!.id ? 'Modifier le projet' : 'Nouveau projet' }}</h2>
         <form class="form" [formGroup]="form" (ngSubmit)="save()">
           <div class="form-row">
             <div class="form-field">
-              <label>Slug <span class="hint">(URL identifier, e.g. my-project)</span></label>
+              <label>Slug <span class="hint">(identifiant d'URL, ex. mon-projet)</span></label>
               <input formControlName="slug">
             </div>
             <div class="form-field">
-              <label>Visual</label>
+              <label>Visuel</label>
               <select formControlName="visual">
-                <option value="payments">Payments / API card</option>
-                <option value="monitoring">Monitoring chart</option>
-                <option value="security">Security shield</option>
-                <option value="integration">System integration</option>
-                <option value="bank">Banking modules</option>
-                <option value="transfer">Money transfer / globe</option>
-                <option value="drone">Drone / map</option>
+                <option value="payments">Paiements / carte API</option>
+                <option value="monitoring">Graphique monitoring</option>
+                <option value="security">Bouclier sécurité</option>
+                <option value="integration">Intégration de systèmes</option>
+                <option value="bank">Modules bancaires</option>
+                <option value="transfer">Transfert d'argent / globe</option>
+                <option value="drone">Drone / carte</option>
               </select>
             </div>
           </div>
 
           <div class="i18n-pair">
             <div class="form-field">
-              <label>Title <span class="i18n-tag">EN</span></label>
+              <label>Titre <span class="i18n-tag">EN</span></label>
               <input formControlName="title_en">
             </div>
             <div class="form-field">
-              <label>Title <span class="i18n-tag">FR</span></label>
+              <label>Titre <span class="i18n-tag">FR</span></label>
               <input formControlName="title_fr">
             </div>
           </div>
           <div class="i18n-pair">
             <div class="form-field">
-              <label>Role <span class="i18n-tag">EN</span></label>
+              <label>Rôle <span class="i18n-tag">EN</span></label>
               <input formControlName="role_en">
             </div>
             <div class="form-field">
-              <label>Role <span class="i18n-tag">FR</span></label>
+              <label>Rôle <span class="i18n-tag">FR</span></label>
               <input formControlName="role_fr">
             </div>
           </div>
           <div class="i18n-pair">
             <div class="form-field">
-              <label>Summary <span class="i18n-tag">EN</span></label>
+              <label>Résumé <span class="i18n-tag">EN</span></label>
               <textarea formControlName="summary_en" rows="2"></textarea>
             </div>
             <div class="form-field">
-              <label>Summary <span class="i18n-tag">FR</span></label>
+              <label>Résumé <span class="i18n-tag">FR</span></label>
               <textarea formControlName="summary_fr" rows="2"></textarea>
             </div>
           </div>
           <div class="i18n-pair">
             <div class="form-field">
-              <label>Card impacts <span class="i18n-tag">EN</span> <span class="hint">(one per line, max 3)</span></label>
+              <label>Impacts de la carte <span class="i18n-tag">EN</span> <span class="hint">(un par ligne, max 3)</span></label>
               <textarea formControlName="highlights_en" rows="3"></textarea>
             </div>
             <div class="form-field">
-              <label>Card impacts <span class="i18n-tag">FR</span> <span class="hint">(one per line, max 3)</span></label>
+              <label>Impacts de la carte <span class="i18n-tag">FR</span> <span class="hint">(un par ligne, max 3)</span></label>
               <textarea formControlName="highlights_fr" rows="3"></textarea>
             </div>
           </div>
 
-          <h2 style="margin-top: 10px;">Case study</h2>
+          <h2 style="margin-top: 10px;">Étude de cas</h2>
           <div class="i18n-pair">
             <div class="form-field">
-              <label>Context <span class="i18n-tag">EN</span></label>
+              <label>Contexte <span class="i18n-tag">EN</span></label>
               <textarea formControlName="context_en" rows="3"></textarea>
             </div>
             <div class="form-field">
-              <label>Context <span class="i18n-tag">FR</span></label>
+              <label>Contexte <span class="i18n-tag">FR</span></label>
               <textarea formControlName="context_fr" rows="3"></textarea>
             </div>
           </div>
           <div class="i18n-pair">
             <div class="form-field">
-              <label>Problem <span class="i18n-tag">EN</span></label>
+              <label>Problème <span class="i18n-tag">EN</span></label>
               <textarea formControlName="problem_en" rows="3"></textarea>
             </div>
             <div class="form-field">
-              <label>Problem <span class="i18n-tag">FR</span></label>
+              <label>Problème <span class="i18n-tag">FR</span></label>
               <textarea formControlName="problem_fr" rows="3"></textarea>
             </div>
           </div>
           <div class="i18n-pair">
             <div class="form-field">
-              <label>Technical approach <span class="i18n-tag">EN</span></label>
+              <label>Approche technique <span class="i18n-tag">EN</span></label>
               <textarea formControlName="approach_en" rows="4"></textarea>
             </div>
             <div class="form-field">
-              <label>Technical approach <span class="i18n-tag">FR</span></label>
+              <label>Approche technique <span class="i18n-tag">FR</span></label>
               <textarea formControlName="approach_fr" rows="4"></textarea>
             </div>
           </div>
           <div class="i18n-pair">
             <div class="form-field">
-              <label>Key contributions <span class="i18n-tag">EN</span> <span class="hint">(one per line)</span></label>
+              <label>Contributions clés <span class="i18n-tag">EN</span> <span class="hint">(un par ligne)</span></label>
               <textarea formControlName="contributions_en" rows="4"></textarea>
             </div>
             <div class="form-field">
-              <label>Key contributions <span class="i18n-tag">FR</span> <span class="hint">(one per line)</span></label>
+              <label>Contributions clés <span class="i18n-tag">FR</span> <span class="hint">(un par ligne)</span></label>
               <textarea formControlName="contributions_fr" rows="4"></textarea>
             </div>
           </div>
           <div class="i18n-pair">
             <div class="form-field">
-              <label>Learnings / business value <span class="i18n-tag">EN</span></label>
+              <label>Enseignements / valeur métier <span class="i18n-tag">EN</span></label>
               <textarea formControlName="learnings_en" rows="3"></textarea>
             </div>
             <div class="form-field">
-              <label>Learnings / business value <span class="i18n-tag">FR</span></label>
+              <label>Enseignements / valeur métier <span class="i18n-tag">FR</span></label>
               <textarea formControlName="learnings_fr" rows="3"></textarea>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-field">
-              <label>Technologies <span class="hint">(one per line, shown as-is in both languages)</span></label>
+              <label>Technologies <span class="hint">(une par ligne, affichées telles quelles dans les deux langues)</span></label>
               <textarea formControlName="tags" rows="4"></textarea>
             </div>
             <div class="form" style="align-content: start;">
               <div class="form-field" style="max-width: 160px;">
-                <label>Sort order</label>
+                <label>Ordre d'affichage</label>
                 <input type="number" formControlName="sort_order">
               </div>
               <div class="form-field">
                 <label>
                   <input type="checkbox" formControlName="featured" style="width: auto; margin-right: 8px;">
-                  Visible on the public site
+                  Visible sur le site public
                 </label>
               </div>
             </div>
@@ -158,9 +158,9 @@ import { fromLines, fromStr, toLines, toStr } from './i18n-form.util';
 
           <div style="display: flex; gap: 10px;">
             <button class="btn btn-primary" type="submit" [disabled]="form.invalid || saving()">
-              {{ saving() ? 'Saving…' : 'Save' }}
+              {{ saving() ? 'Enregistrement…' : 'Enregistrer' }}
             </button>
-            <button class="btn btn-quiet" type="button" (click)="cancel()">Cancel</button>
+            <button class="btn btn-quiet" type="button" (click)="cancel()">Annuler</button>
           </div>
         </form>
       </div>
@@ -169,7 +169,7 @@ import { fromLines, fromStr, toLines, toStr } from './i18n-form.util';
     @if (projects(); as list) {
       <table class="admin-table">
         <thead>
-          <tr><th>Order</th><th>Title</th><th>Role</th><th>Status</th><th></th></tr>
+          <tr><th>Ordre</th><th>Titre</th><th>Rôle</th><th>Statut</th><th></th></tr>
         </thead>
         <tbody>
           @for (project of list; track project.id) {
@@ -182,12 +182,12 @@ import { fromLines, fromStr, toLines, toStr } from './i18n-form.util';
               <td>{{ project.role['en'] }}</td>
               <td>
                 <span class="badge" [class.badge-read]="project.featured" [class.badge-hidden]="!project.featured">
-                  {{ project.featured ? 'Visible' : 'Hidden' }}
+                  {{ project.featured ? 'Visible' : 'Masqué' }}
                 </span>
               </td>
               <td class="row-actions">
-                <button class="btn btn-outline btn-sm" (click)="startEdit(project)">Edit</button>
-                <button class="btn btn-danger btn-sm" (click)="remove(project)">Delete</button>
+                <button class="btn btn-outline btn-sm" (click)="startEdit(project)">Modifier</button>
+                <button class="btn btn-danger btn-sm" (click)="remove(project)">Supprimer</button>
               </td>
             </tr>
           }
@@ -309,13 +309,13 @@ export class ProjectsEditorComponent {
       },
       error: (err) => {
         this.saving.set(false);
-        this.error.set(err.status === 409 ? 'A project with this slug already exists.' : 'Saving failed.');
+        this.error.set(err.status === 409 ? 'Un projet avec ce slug existe déjà.' : "Échec de l'enregistrement.");
       },
     });
   }
 
   remove(project: AdminProject): void {
-    if (!confirm(`Delete "${project.title['en']}"?`)) return;
+    if (!confirm(`Supprimer « ${project.title['en']} » ?`)) return;
     this.api.delete('projects', project.id).subscribe(() => this.load());
   }
 }

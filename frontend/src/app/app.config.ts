@@ -1,5 +1,7 @@
-import { ApplicationConfig, isDevMode, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, LOCALE_ID, isDevMode, provideZoneChangeDetection } from '@angular/core';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
 import {
   provideRouter,
   withComponentInputBinding,
@@ -13,8 +15,12 @@ import { authInterceptor } from './core/auth.interceptor';
 import { detectInitialLang } from './core/language.service';
 import { TranslocoHttpLoader } from './core/transloco.loader';
 
+// French dates in the admin (DatePipe) — the public site renders no dates.
+registerLocaleData(localeFr);
+
 export const appConfig: ApplicationConfig = {
   providers: [
+    { provide: LOCALE_ID, useValue: 'fr' },
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(
       routes,

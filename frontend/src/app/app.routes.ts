@@ -9,7 +9,7 @@ export const routes: Routes = [
   {
     path: 'admin/login',
     loadComponent: () => import('./pages/admin/login.component').then((m) => m.LoginComponent),
-    title: 'Admin — Sign in',
+    title: 'Admin — Connexion',
   },
   {
     path: 'admin',
