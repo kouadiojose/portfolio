@@ -33,6 +33,7 @@
   --amber: #f59e0b;
   --amber-deep: #b45309;  /* accessible amber for text on light backgrounds */
   --gradient-warm: linear-gradient(100deg, #f59e0b, #ea580c);
+  --gradient-action: linear-gradient(100deg, #c2410c, #ea580c 60%, #f59e0b 130%);
   --rose: #f43f5e;
 
   --accent: var(--indigo);
@@ -53,7 +54,7 @@
   --shadow-sm: 0 1px 2px rgba(14, 19, 48, 0.06);
   --shadow-md: 0 8px 22px -6px rgba(14, 19, 48, 0.12), 0 2px 6px -2px rgba(14, 19, 48, 0.06);
   --shadow-lg: 0 24px 50px -12px rgba(23, 20, 68, 0.28);
-  --shadow-glow: 0 10px 40px -8px rgba(84, 87, 240, 0.5);
+  --shadow-glow: 0 10px 40px -8px rgba(234, 88, 12, 0.5);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -113,13 +114,13 @@ button { font-family: var(--font); }
 .nav-menu a:hover, .nav-menu a.is-active { color: var(--accent); }
 
 .nav-menu a.nav-cta {
-  color: #fff; background: var(--gradient);
+  color: #fff; background: var(--gradient-action);
   padding: 8px 18px; border-radius: 999px; font-weight: 620;
-  box-shadow: 0 4px 14px -2px rgba(84, 87, 240, 0.5);
+  box-shadow: 0 4px 14px -2px rgba(234, 88, 12, 0.5);
   transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-.nav-menu a.nav-cta:hover { transform: translateY(-1px); box-shadow: 0 8px 20px -4px rgba(84, 87, 240, 0.6); color: #fff; }
+.nav-menu a.nav-cta:hover { transform: translateY(-1px); box-shadow: 0 8px 20px -4px rgba(234, 88, 12, 0.6); color: #fff; }
 
 .lang-switch {
   display: inline-flex; align-items: center;
@@ -154,8 +155,8 @@ button { font-family: var(--font); }
 .btn:hover { transform: translateY(-2px); }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-.btn-primary { background: var(--gradient); color: #fff; box-shadow: var(--shadow-glow); }
-.btn-primary:hover { box-shadow: 0 14px 44px -8px rgba(84, 87, 240, 0.6); }
+.btn-primary { background: var(--gradient-action); color: #fff; box-shadow: var(--shadow-glow); }
+.btn-primary:hover { box-shadow: 0 14px 44px -8px rgba(234, 88, 12, 0.6); }
 
 .btn-outline { background: #fff; color: var(--text); border-color: var(--border-strong); box-shadow: var(--shadow-sm); }
 .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
