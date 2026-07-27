@@ -262,6 +262,45 @@ class AdminStats(BaseModel):
 class TrackPayload(BaseModel):
     path: str = Field(min_length=1, max_length=300)
     language: Literal["en", "fr"] = "en"
+    referrer: str = Field(default="", max_length=500)
+
+
+# ---------- Visitor details (admin) ----------
+
+class VisitOut(BaseModel):
+    id: int
+    path: str
+    language: str
+    country: str
+    browser: str
+    os: str
+    device: str
+    referrer: str
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class VisitsPage(BaseModel):
+    items: list[VisitOut]
+    total: int
+
+
+class LabelCount(BaseModel):
+    label: str
+    views: int
+    visitors: int
+
+
+class VisitsSummary(BaseModel):
+    """Aggregates over the last 30 days."""
+    views: int
+    visitors: int
+    countries: list[LabelCount]
+    browsers: list[LabelCount]
+    devices: list[LabelCount]
+    referrers: list[LabelCount]
+    languages: list[LabelCount]
 
 
 # ---------- Contact ----------

@@ -1,5 +1,8 @@
 """Authenticated CRUD endpoints used by the admin dashboard."""
+from datetime import datetime, timedelta, timezone
+
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from .. import schemas
@@ -313,4 +316,62 @@ def admin_stats(db: Session = Depends(get_db)):
             for m in sorted(messages, key=lambda m: m.created_at, reverse=True)[:3]
         ],
         visits=_visit_stats(db),
+    )
+
+
+# ---------- Visitor details ----------
+
+@router.get("/visits", response_model=schemas.VisitsPage)
+def admin_list_visits(
+    limit: int = 50,
+    offset: int = 0,
+    db: Session = Depends(get_db),
+):
+    limit = max(1, min(limit, 200))
+    query = db.query(PageView).order_by(PageView.created_at.desc())
+    total = query.count()
+    items = query.offset(max(0, offset)).limit(limit).all()
+    return schemas.VisitsPage(
+        items=[schemas.VisitOut.model_validate(v) for v in items],
+        total=total,
+    )
+
+
+def _label_counts(db: Session, column, start, top: int = 12) -> list:
+    rows = (
+        db.query(
+            column,
+            func.count(PageView.id).label("views"),
+            func.count(func.distinct(PageView.visitor)).label("visitors"),
+        )
+        .filter(PageView.created_at >= start, column != "")
+        .group_by(column)
+        .order_by(func.count(PageView.id).desc())
+        .limit(top)
+        .all()
+    )
+    return [
+        schemas.LabelCount(label=row[0], views=row[1], visitors=row[2]) for row in rows
+    ]
+
+
+@router.get("/visits/summary", response_model=schemas.VisitsSummary)
+def admin_visits_summary(db: Session = Depends(get_db)):
+    """Aggregated visitor details over the last 30 days."""
+    start = datetime.now(timezone.utc) - timedelta(days=30)
+    views = db.query(func.count(PageView.id)).filter(PageView.created_at >= start).scalar() or 0
+    visitors = (
+        db.query(func.count(func.distinct(PageView.visitor)))
+        .filter(PageView.created_at >= start)
+        .scalar()
+        or 0
+    )
+    return schemas.VisitsSummary(
+        views=views,
+        visitors=visitors,
+        countries=_label_counts(db, PageView.country, start),
+        browsers=_label_counts(db, PageView.browser, start),
+        devices=_label_counts(db, PageView.device, start),
+        referrers=_label_counts(db, PageView.referrer, start),
+        languages=_label_counts(db, PageView.language, start),
     )

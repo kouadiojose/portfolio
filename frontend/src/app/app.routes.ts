@@ -58,6 +58,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/admin/values-editor.component').then((m) => m.ValuesEditorComponent),
       },
+      {
+        path: 'visitors',
+        loadComponent: () =>
+          import('./pages/admin/visitors.component').then((m) => m.VisitorsComponent),
+      },
     ],
   },
 

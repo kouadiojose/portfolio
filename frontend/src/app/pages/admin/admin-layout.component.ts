@@ -11,6 +11,7 @@ import { AuthService } from '../../core/auth.service';
       <aside class="admin-sidebar">
         <nav>
           <a routerLink="dashboard" routerLinkActive="is-active">Tableau de bord</a>
+          <a routerLink="visitors" routerLinkActive="is-active">Visiteurs</a>
           <a routerLink="messages" routerLinkActive="is-active">Boîte de réception</a>
           <a routerLink="settings" routerLinkActive="is-active">Contenu du site</a>
           <a routerLink="projects" routerLinkActive="is-active">Projets</a>

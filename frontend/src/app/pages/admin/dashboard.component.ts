@@ -82,7 +82,10 @@ interface AdminStats {
       </div>
 
       <div class="admin-panel">
-        <h2>Audience — 7 derniers jours</h2>
+        <h2>
+          Audience — 7 derniers jours
+          <a routerLink="/admin/visitors" class="audience-more">Détail des visiteurs →</a>
+        </h2>
         <div class="audience-grid">
           <div class="audience-chart" aria-label="Daily views">
             @for (day of s.visits.daily; track day.date) {

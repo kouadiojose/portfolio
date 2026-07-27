@@ -20,7 +20,7 @@ from ..models import (
     StackItem,
     ValueProp,
 )
-from ..tracking import visitor_hash
+from ..tracking import lookup_country, parse_user_agent, referrer_domain, visitor_hash
 
 router = APIRouter(prefix="/api", tags=["public"])
 
@@ -135,7 +135,9 @@ def track(payload: schemas.TrackPayload, request: Request, db: Session = Depends
     path = payload.path.split("?")[0].split("#")[0]
     if path.startswith("/admin"):
         return
-    visitor = visitor_hash(client_ip(request), request.headers.get("user-agent", ""))
+    ip = client_ip(request)
+    user_agent = request.headers.get("user-agent", "")
+    visitor = visitor_hash(ip, user_agent)
     # One view per visitor+path per 30 minutes — refreshes don't inflate numbers
     from datetime import datetime, timedelta, timezone
 
@@ -150,7 +152,20 @@ def track(payload: schemas.TrackPayload, request: Request, db: Session = Depends
     )
     if recent:
         return
-    db.add(PageView(path=path, language=payload.language, visitor=visitor))
+    browser, os_name, device = parse_user_agent(user_agent)
+    own_hosts = {(request.headers.get("host") or "").split(":")[0].lower()}
+    db.add(
+        PageView(
+            path=path,
+            language=payload.language,
+            visitor=visitor,
+            country=lookup_country(ip),
+            browser=browser,
+            os=os_name,
+            device=device,
+            referrer=referrer_domain(payload.referrer, own_hosts),
+        )
+    )
     db.commit()
 
 

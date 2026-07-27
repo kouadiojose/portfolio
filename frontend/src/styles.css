@@ -782,6 +782,30 @@ button { font-family: var(--font); }
 .audience-pages code { color: var(--text-2); font-family: var(--mono); font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .audience-pages span { font-weight: 700; color: var(--text); }
 
+/* Visitor details (admin) */
+.visit-panels { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 24px; }
+.visit-panels .admin-panel { margin-bottom: 0; }
+.lc-list { display: grid; gap: 9px; }
+.lc-row { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; align-items: center; font-size: 13.5px; }
+.lc-row:has(.lc-flag) { grid-template-columns: auto auto 1fr auto; }
+.lc-row:not(:has(.lc-flag)) { grid-template-columns: minmax(90px, auto) 1fr auto; }
+.lc-flag { font-size: 17px; line-height: 1; }
+.lc-label { color: var(--text-2); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lc-mono { font-family: var(--mono); font-size: 12.5px; }
+.lc-bar-wrap { height: 8px; border-radius: 99px; background: rgba(99, 102, 241, 0.08); overflow: hidden; }
+.lc-bar { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--indigo), var(--violet)); }
+.lc-count { font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+.visit-empty { color: var(--text-3); font-size: 13.5px; margin-bottom: 10px; }
+.visit-table-wrap { overflow-x: auto; }
+.visit-date { white-space: nowrap; color: var(--text-2); font-size: 13px; }
+.visit-path { font-family: var(--mono); font-size: 12.5px; color: var(--text-2); }
+.visit-unknown { color: var(--text-3); }
+.badge-bot { background: rgba(245, 158, 11, 0.14); color: #b45309; }
+.visit-attribution { color: var(--text-3); font-size: 12.5px; margin-top: 4px; }
+.visit-attribution a { color: var(--text-3); text-decoration: underline; }
+.audience-more { float: right; font-size: 12.5px; font-weight: 600; color: var(--indigo); text-decoration: none; }
+.audience-more:hover { text-decoration: underline; }
+
 .stat-number {
   font-size: 28px; font-weight: 800; letter-spacing: -1px; line-height: 1.15;
   background: var(--gradient-vivid);

@@ -109,6 +109,14 @@ class PageView(Base):
     path: Mapped[str] = mapped_column(String(300), index=True)
     language: Mapped[str] = mapped_column(String(5), default="en")
     visitor: Mapped[str] = mapped_column(String(64), index=True)
+    # Enriched, still privacy-friendly: the country is resolved from the IP at
+    # collection time (local GeoIP database) and the IP is then discarded; the
+    # user agent is reduced to browser/OS/device family, never stored raw.
+    country: Mapped[str] = mapped_column(String(2), default="", index=True)
+    browser: Mapped[str] = mapped_column(String(30), default="")
+    os: Mapped[str] = mapped_column(String(30), default="")
+    device: Mapped[str] = mapped_column(String(10), default="")
+    referrer: Mapped[str] = mapped_column(String(200), default="")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
 
 

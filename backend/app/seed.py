@@ -22,6 +22,7 @@ from .models import (
     AdminUser,
     ContactMessage,
     Experience,
+    PageView,
     Project,
     SiteSettings,
     StackItem,
@@ -57,7 +58,7 @@ def _snapshot_preserved_data() -> dict:
     Uses raw SQL so it works against an outdated schema; anything that cannot
     be read is simply skipped.
     """
-    preserved = {"admins": [], "messages": []}
+    preserved = {"admins": [], "messages": [], "page_views": []}
     inspector = inspect(engine)
     with engine.connect() as conn:
         if inspector.has_table("admin_users"):
@@ -79,6 +80,21 @@ def _snapshot_preserved_data() -> dict:
                     break
                 except Exception:
                     continue
+        if inspector.has_table("page_views"):
+            # Column intersection so analytics survive schema evolution:
+            # columns the old table lacks are filled with model defaults.
+            try:
+                old_cols = {c["name"] for c in inspector.get_columns("page_views")}
+                model_cols = [
+                    c.name for c in PageView.__table__.columns
+                    if c.name in old_cols and c.name != "id"
+                ]
+                rows = conn.execute(
+                    text(f"SELECT {', '.join(model_cols)} FROM page_views")
+                ).fetchall()
+                preserved["page_views"] = [dict(row._mapping) for row in rows]
+            except Exception:
+                pass
     return preserved
 
 
@@ -105,20 +121,39 @@ def _restore_preserved_data(db, preserved: dict) -> None:
                 )
             )
         print(f"Preserved {len(preserved['messages'])} contact message(s) across the reset.")
+    if preserved.get("page_views"):
+        for view in preserved["page_views"]:
+            created_at = view.get("created_at")
+            if isinstance(created_at, str):
+                created_at = datetime.fromisoformat(created_at)
+            db.add(
+                PageView(
+                    path=view.get("path") or "/",
+                    language=view.get("language") or "en",
+                    visitor=view.get("visitor") or "",
+                    country=view.get("country") or "",
+                    browser=view.get("browser") or "",
+                    os=view.get("os") or "",
+                    device=view.get("device") or "",
+                    referrer=view.get("referrer") or "",
+                    created_at=created_at,
+                )
+            )
+        print(f"Preserved {len(preserved['page_views'])} page view(s) across the reset.")
     # Make restored rows visible to the existence checks below (autoflush is off)
     db.flush()
 
 
 def seed() -> None:
     settings = get_settings()
-    preserved = {"admins": [], "messages": []}
+    preserved = {"admins": [], "messages": [], "page_views": []}
 
     if not schema_matches():
         if settings.reset_on_schema_mismatch:
             print(
                 "WARNING: database schema is out of date — dropping all tables "
                 "and re-seeding (disable with RESET_ON_SCHEMA_MISMATCH=false). "
-                "Admin account and contact messages will be preserved."
+                "Admin account, contact messages and analytics will be preserved."
             )
             preserved = _snapshot_preserved_data()
             Base.metadata.drop_all(bind=engine)

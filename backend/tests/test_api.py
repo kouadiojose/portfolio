@@ -316,3 +316,33 @@ def test_tracking_and_visit_stats(client, auth_headers):
     assert visits["daily"][-1]["views"] == 3
     top_paths = {p["path"] for p in visits["top_pages"]}
     assert "/fr" in top_paths and "/admin/dashboard" not in top_paths
+
+def test_visitor_details_and_summary(client, auth_headers):
+    chrome = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"
+    visit = {"User-Agent": chrome, "X-Forwarded-For": "8.8.8.8"}
+    payload = {"path": "/en", "language": "en", "referrer": "https://www.google.com/search?q=x"}
+    assert client.post("/api/track", json=payload, headers=visit).status_code == 204
+
+    # A bot visit is tagged as such
+    bot = {"User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1)", "X-Forwarded-For": "8.8.4.4"}
+    assert client.post("/api/track", json={"path": "/en", "language": "en"}, headers=bot).status_code == 204
+
+    page = client.get("/api/admin/visits", headers=auth_headers).json()
+    assert page["total"] >= 2
+    by_path = {v["browser"]: v for v in page["items"]}
+    human = by_path["Chrome"]
+    assert human["country"] == "US"          # resolved locally from 8.8.8.8, IP not stored
+    assert human["os"] == "Windows"
+    assert human["device"] == "desktop"
+    assert human["referrer"] == "google.com"  # only the external domain is kept
+    assert by_path["Robot"]["device"] == "bot"
+
+    summary = client.get("/api/admin/visits/summary", headers=auth_headers).json()
+    assert summary["views"] >= 2
+    assert "US" in {c["label"] for c in summary["countries"]}
+    assert any(b["label"] == "Chrome" for b in summary["browsers"])
+    assert any(d["label"] == "desktop" for d in summary["devices"])
+    assert any(r["label"] == "google.com" for r in summary["referrers"])
+
+    # Visitor endpoints require authentication
+    assert client.get("/api/admin/visits").status_code in (401, 403)

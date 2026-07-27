@@ -13,14 +13,20 @@ export class TrackingService {
   private router = inject(Router);
   private language = inject(LanguageService);
 
+  private firstNavigation = true;
+
   start(): void {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event) => {
         const path = (event as NavigationEnd).urlAfterRedirects.split('?')[0].split('#')[0];
+        // The external referrer is only meaningful on the landing navigation;
+        // in-app navigations would otherwise report our own domain.
+        const referrer = this.firstNavigation ? document.referrer || '' : '';
+        this.firstNavigation = false;
         if (path.startsWith('/admin')) return;
         this.http
-          .post('/api/track', { path, language: this.language.lang() })
+          .post('/api/track', { path, language: this.language.lang(), referrer })
           .subscribe({ error: () => {} }); // analytics must never break the app
       });
   }
