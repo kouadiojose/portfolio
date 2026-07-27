@@ -31,6 +31,8 @@
   --cyan: #22c7e6;
   --emerald: #10b981;
   --amber: #f59e0b;
+  --amber-deep: #b45309;  /* accessible amber for text on light backgrounds */
+  --gradient-warm: linear-gradient(100deg, #f59e0b, #ea580c);
   --rose: #f43f5e;
 
   --accent: var(--indigo);
@@ -328,7 +330,7 @@ button { font-family: var(--font); }
 
 .impact-number {
   display: block; font-size: 30px; font-weight: 800; letter-spacing: -1px; line-height: 1.1;
-  background: var(--gradient-vivid);
+  background: var(--gradient-warm);
   -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -345,10 +347,10 @@ button { font-family: var(--font); }
 
 .section-eyebrow {
   display: inline-block;
-  color: var(--accent); font-weight: 700; font-size: 11.5px;
+  color: var(--amber-deep); font-weight: 700; font-size: 11.5px;
   text-transform: uppercase; letter-spacing: 2px;
-  background: rgba(84, 87, 240, 0.09);
-  border: 1px solid rgba(84, 87, 240, 0.18);
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.28);
   padding: 4px 12px; border-radius: 999px;
   margin-bottom: 14px;
 }
@@ -374,8 +376,8 @@ button { font-family: var(--font); }
 
 .principles-title {
   font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
-  color: #fff; padding: 13px 22px;
-  background: var(--gradient);
+  color: #2a1c05; padding: 13px 22px;
+  background: var(--gradient-warm);
 }
 
 .principle { display: flex; align-items: baseline; gap: 14px; padding: 14px 22px; }
@@ -448,7 +450,7 @@ button { font-family: var(--font); }
 .work-impacts li { position: relative; padding-left: 18px; font-size: 13.5px; color: var(--text-2); }
 .work-impacts li::before {
   content: ""; position: absolute; left: 0; top: 8px;
-  width: 6px; height: 6px; border-radius: 2px; background: var(--gradient);
+  width: 6px; height: 6px; border-radius: 2px; background: var(--gradient-warm);
 }
 
 .chip-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: auto; }
@@ -620,7 +622,7 @@ button { font-family: var(--font); }
   box-shadow: var(--shadow-lg);
 }
 
-.cta-band .section-eyebrow { color: #9db4ff; background: rgba(157, 180, 255, 0.1); border-color: rgba(157, 180, 255, 0.25); }
+.cta-band .section-eyebrow { color: #fcd34d; background: rgba(252, 211, 77, 0.1); border-color: rgba(252, 211, 77, 0.3); }
 .cta-band .section-title { color: #fff; }
 .cta-band .contact-lead { color: var(--deep-text-2); }
 
