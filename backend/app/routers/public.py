@@ -182,7 +182,7 @@ def send_message(payload: schemas.ContactCreate, request: Request, db: Session =
         return {"detail": "Message received."}
 
     verify_challenge(payload.challenge)
-    enforce_rate_limit(client_ip(request))
+    enforce_rate_limit(db, client_ip(request))
 
     if looks_like_spam(payload.body):
         raise HTTPException(status_code=422, detail="Message rejected: too many links.")
