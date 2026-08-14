@@ -212,34 +212,35 @@ def _visit_stats(db: Session) -> schemas.VisitStats:
     week_start = today_start - timedelta(days=6)
     month_start = today_start - timedelta(days=29)
 
-    def window(start):
-        views = db.query(func.count(PageView.id)).filter(PageView.created_at >= start).scalar() or 0
-        visitors = (
-            db.query(func.count(func.distinct(PageView.visitor)))
-            .filter(PageView.created_at >= start)
-            .scalar()
-            or 0
-        )
-        return views, visitors
+    # One query for the whole 7-day window (today/week/daily breakdown are
+    # all derived from it in Python below) instead of a separate count query
+    # per day/window — SQLite and Postgres both avoid a portable day-bucket
+    # SQL expression this way, at the cost of a bit of Python bucketing.
+    # SQLite hands back naive datetimes regardless of column type, so they're
+    # normalized to aware UTC here to compare against today_start/week_start.
+    week_rows = [
+        (created_at if created_at.tzinfo else created_at.replace(tzinfo=timezone.utc), visitor)
+        for created_at, visitor in db.query(PageView.created_at, PageView.visitor)
+        .filter(PageView.created_at >= week_start)
+        .all()
+    ]
 
-    today_views, today_visitors = window(today_start)
-    week_views, week_visitors = window(week_start)
+    def stats_for(rows) -> tuple[int, int]:
+        return len(rows), len({visitor for _, visitor in rows})
+
+    today_rows = [r for r in week_rows if r[0] >= today_start]
+    today_views, today_visitors = stats_for(today_rows)
+    week_views, week_visitors = stats_for(week_rows)
     total_views = db.query(func.count(PageView.id)).scalar() or 0
 
     daily = []
     for offset in range(6, -1, -1):
         day_start = today_start - timedelta(days=offset)
         day_end = day_start + timedelta(days=1)
-        day_filter = (PageView.created_at >= day_start, PageView.created_at < day_end)
+        day_rows = [r for r in week_rows if day_start <= r[0] < day_end]
+        day_views, day_visitors = stats_for(day_rows)
         daily.append(
-            schemas.VisitDay(
-                date=day_start.strftime("%Y-%m-%d"),
-                views=db.query(func.count(PageView.id)).filter(*day_filter).scalar() or 0,
-                visitors=db.query(func.count(func.distinct(PageView.visitor)))
-                .filter(*day_filter)
-                .scalar()
-                or 0,
-            )
+            schemas.VisitDay(date=day_start.strftime("%Y-%m-%d"), views=day_views, visitors=day_visitors)
         )
 
     top = (

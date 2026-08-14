@@ -16,7 +16,7 @@ from datetime import datetime
 
 from sqlalchemy import JSON, inspect, text
 
-from .config import get_settings
+from .config import assert_production_secrets, get_settings
 from .database import Base, SessionLocal, engine
 from .models import (
     AdminUser,
@@ -146,6 +146,7 @@ def _restore_preserved_data(db, preserved: dict) -> None:
 
 def seed() -> None:
     settings = get_settings()
+    assert_production_secrets(settings)
     preserved = {"admins": [], "messages": [], "page_views": []}
 
     if not schema_matches():

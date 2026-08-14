@@ -120,6 +120,23 @@ class PageView(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
 
 
+class RateLimitHit(Base):
+    """One row per contact-form submission attempt, used to enforce the
+    per-IP rate limit from the database rather than in-process memory —
+    so the limit holds even when the API runs as several instances/workers.
+
+    `ip_hash` is a salted hash of the client IP (never the raw IP, in line
+    with the rest of the app's no-raw-IP-at-rest policy); rows older than
+    the rate window are pruned on every check, so nothing accumulates.
+    """
+
+    __tablename__ = "rate_limit_hits"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    ip_hash: Mapped[str] = mapped_column(String(64), index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+
+
 class ContactMessage(Base):
     __tablename__ = "contact_messages"
 
