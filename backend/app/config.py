@@ -36,7 +36,32 @@ class Settings(BaseSettings):
     def cors_origin_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
 
+    @property
+    def is_dev_database(self) -> bool:
+        """SQLite is only ever used in local development — every deployment
+        target (Railway, docker-compose) injects a real DATABASE_URL."""
+        return self.database_url.startswith("sqlite")
+
 
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
+
+
+DEFAULT_SECRET_KEY = "change-me-in-production"
+
+
+def assert_production_secrets(settings: Settings) -> None:
+    """Refuse to boot against a real database with the placeholder secret key.
+
+    The secret key signs every admin JWT and the contact-form anti-spam
+    token, and salts the visitor-analytics hash — a leaked/default value lets
+    anyone forge an admin session. SQLite is used only in local dev, so a
+    non-SQLite DATABASE_URL is treated as "this is a real deployment".
+    """
+    if not settings.is_dev_database and settings.secret_key == DEFAULT_SECRET_KEY:
+        raise RuntimeError(
+            "SECRET_KEY is still the default placeholder value while DATABASE_URL points "
+            "to a non-SQLite database. Set a strong SECRET_KEY (e.g. `openssl rand -hex 32`) "
+            "before deploying — refusing to start with an insecure secret."
+        )

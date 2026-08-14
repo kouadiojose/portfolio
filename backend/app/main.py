@@ -5,10 +5,11 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 
-from .config import get_settings
+from .config import assert_production_secrets, get_settings
 from .routers import admin, auth, public
 
 settings = get_settings()
+assert_production_secrets(settings)
 
 app = FastAPI(
     title=settings.app_name,
